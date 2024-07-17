@@ -1,5 +1,56 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的知识库</title><link>https://tangrenbin.github.io</link><description>生活或者工作中遇到的一些知识点的积累</description><copyright>唐任斌的知识库</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Tue, 16 Jul 2024 12:41:29 +0000</lastBuildDate><managingEditor>唐任斌的知识库</managingEditor><ttl>60</ttl><webMaster>唐任斌的知识库</webMaster><item><title>一些待办</title><link>https://tangrenbin.github.io/post/yi-xie-dai-ban.html</link><description>- [ ] 手撕链表
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的知识库</title><link>https://tangrenbin.github.io</link><description>生活或者工作中遇到的一些知识点的积累</description><copyright>唐任斌的知识库</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Wed, 17 Jul 2024 08:33:56 +0000</lastBuildDate><managingEditor>唐任斌的知识库</managingEditor><ttl>60</ttl><webMaster>唐任斌的知识库</webMaster><item><title>亚马逊云 Ubuntu Vps 开启 root 用户开启 ssh 密码登录踩坑</title><link>https://tangrenbin.github.io/post/ya-ma-xun-yun-%20Ubuntu%20Vps%20-kai-qi-%20root%20-yong-hu-kai-qi-%20ssh%20-mi-ma-deng-lu-cai-keng.html</link><description># ping 不通&#13;
+ &#13;
+&#13;
+1. 新建一个安全组，开启所有流量的出站和入站，特别是要添加一个  ICMP - IPv4&#13;
+&#13;
+![image](https://github.com/user-attachments/assets/4a33d013-d1d2-4bba-b907-184f42b9d7fc)&#13;
+&#13;
+![image](https://github.com/user-attachments/assets/5aa110cc-88b0-4df7-b0ad-a89ff139aced)&#13;
+&#13;
+2. 先申请一个弹性ip然后绑定到实例，然后释放这个ip，达到刷新的目的&#13;
+&#13;
+# 开启 root 用户开启 ssh 密码登录&#13;
+&#13;
+&#13;
+1. 在控制台登录到终端，**登录之后不要轻易关闭网页，因为可能会导致无法再次进入**&#13;
+2. 切换到root用户&#13;
+```shell&#13;
+sudo -i&#13;
+```&#13;
+3. 设置 root 用户密码&#13;
+```shell&#13;
+passwd&#13;
+```&#13;
+4. 编辑sshd_config配置文件，修改 PermitRootLogin 和 PasswordAuthentication 为 yes&#13;
+```shell&#13;
+vim /etc/ssh/sshd_config&#13;
+```&#13;
+5. 查看配置文件是否生效&#13;
+```shell&#13;
+sshd -T | grep permitrootlogin&#13;
+sshd -T | grep passwordauthentication&#13;
+```&#13;
+6. 如果 passwordauthentication 还是 no , 那就说明还有其他的地方把这个参数配置成了 no ,通过这个命名把那个文件找出来，并且进去这个目录把这个参数改成 yes&#13;
+```shell&#13;
+grep -i include /etc/ssh/sshd_config&#13;
+```&#13;
+![image](https://github.com/user-attachments/assets/8d5d6e0a-2e78-49cc-aa7d-ab3c889e6d28)&#13;
+&#13;
+7. 重启 SSH 服务来应用更改&#13;
+```shell&#13;
+systemctl restart ssh&#13;
+```&#13;
+8. 再次验证配置是否正确&#13;
+```shell&#13;
+sshd -T | grep passwordauthentication&#13;
+```&#13;
+![image](https://github.com/user-attachments/assets/5459b805-d926-42f8-a8ba-1d5892aa24a6)&#13;
+&#13;
+&#13;
+&#13;
+&#13;
+。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/ya-ma-xun-yun-%20Ubuntu%20Vps%20-kai-qi-%20root%20-yong-hu-kai-qi-%20ssh%20-mi-ma-deng-lu-cai-keng.html</guid><pubDate>Wed, 17 Jul 2024 08:33:28 +0000</pubDate></item><item><title>一些待办</title><link>https://tangrenbin.github.io/post/yi-xie-dai-ban.html</link><description>- [ ] 手撕链表
 - [ ] 手撕哈希表
 - [ ] 双指针。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/yi-xie-dai-ban.html</guid><pubDate>Tue, 16 Jul 2024 12:34:50 +0000</pubDate></item><item><title>取余操作性能优化</title><link>https://tangrenbin.github.io/post/qu-yu-cao-zuo-xing-neng-you-hua.html</link><description>一个数&amp;(2&lt;sup&gt;n&lt;/sup&gt;-1)等价于它对2&lt;sup&gt;n&lt;/sup&gt;取余&#13;
 &#13;
