@@ -29,3 +29,17 @@ Qian-yu520
 ```
 dav
 ```
+
+# alist-tvbox安装
+
+[官方指导文档](https://github.com/power721/alist-tvbox/blob/master/doc/README_zh.md)
+
+## 安装命令
+```shell
+wget https://d.har01d.cn/update_xiaoya.sh -O update_xiaoya.sh && bash ./update_xiaoya.sh -s /home/alist 800 801
+```
+## 端口说明
+
+-  4567-800 : 管理界面端口
+-  5344-801 : 小雅AList端口（挂载webdav）
+
