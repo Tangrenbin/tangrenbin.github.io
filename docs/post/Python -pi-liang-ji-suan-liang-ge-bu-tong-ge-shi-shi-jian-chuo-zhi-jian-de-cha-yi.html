@@ -186,14 +186,14 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <span class="pl-s1">differences</span> <span class="pl-c1">=</span> []
 <span class="pl-k">for</span> <span class="pl-s1">ts1</span>, <span class="pl-s1">ts2</span> <span class="pl-c1">in</span> <span class="pl-s1">timestamps</span>:
     <span class="pl-c"># Parse the timestamps</span>
-    <span class="pl-s1">dt1</span> <span class="pl-c1">=</span> <span class="pl-s1">datetime</span>.<span class="pl-en">strptime</span>(<span class="pl-s1">ts1</span>, <span class="pl-s">"%Y%m%d %H:%M:%S:%f"</span>)
-    <span class="pl-s1">dt2</span> <span class="pl-c1">=</span> <span class="pl-s1">datetime</span>.<span class="pl-en">strptime</span>(<span class="pl-s1">ts2</span>.<span class="pl-en">replace</span>(<span class="pl-s">" "</span>, <span class="pl-s">""</span>), <span class="pl-s">"%y-%m-%d%H:%M:%S"</span>)
+    <span class="pl-s1">dt1</span> <span class="pl-c1">=</span> <span class="pl-s1">datetime</span>.<span class="pl-c1">strptime</span>(<span class="pl-s1">ts1</span>, <span class="pl-s">"%Y%m%d %H:%M:%S:%f"</span>)
+    <span class="pl-s1">dt2</span> <span class="pl-c1">=</span> <span class="pl-s1">datetime</span>.<span class="pl-c1">strptime</span>(<span class="pl-s1">ts2</span>.<span class="pl-c1">replace</span>(<span class="pl-s">" "</span>, <span class="pl-s">""</span>), <span class="pl-s">"%y-%m-%d%H:%M:%S"</span>)
     
     <span class="pl-c"># Calculate the difference</span>
     <span class="pl-s1">diff</span> <span class="pl-c1">=</span> <span class="pl-s1">dt1</span> <span class="pl-c1">-</span> <span class="pl-s1">dt2</span>
     
     <span class="pl-c"># Store the difference</span>
-    <span class="pl-s1">differences</span>.<span class="pl-en">append</span>(<span class="pl-s1">diff</span>.<span class="pl-en">total_seconds</span>())
+    <span class="pl-s1">differences</span>.<span class="pl-c1">append</span>(<span class="pl-s1">diff</span>.<span class="pl-c1">total_seconds</span>())
 
 <span class="pl-c"># Print the differences</span>
 <span class="pl-k">for</span> <span class="pl-s1">i</span>, <span class="pl-s1">diff</span> <span class="pl-c1">in</span> <span class="pl-en">enumerate</span>(<span class="pl-s1">differences</span>):

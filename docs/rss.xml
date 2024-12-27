@@ -1,5 +1,38 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的知识库</title><link>https://tangrenbin.github.io</link><description>生活或者工作中遇到的一些知识点的积累</description><copyright>唐任斌的知识库</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Wed, 07 Aug 2024 05:07:51 +0000</lastBuildDate><managingEditor>唐任斌的知识库</managingEditor><ttl>60</ttl><webMaster>唐任斌的知识库</webMaster><item><title>Github上热门 C 语言项目汇总
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的知识库</title><link>https://tangrenbin.github.io</link><description>生活或者工作中遇到的一些知识点的积累</description><copyright>唐任斌的知识库</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Fri, 27 Dec 2024 07:58:59 +0000</lastBuildDate><managingEditor>唐任斌的知识库</managingEditor><ttl>60</ttl><webMaster>唐任斌的知识库</webMaster><item><title>gitlab 批量导出mr记录</title><link>https://tangrenbin.github.io/post/gitlab%20-pi-liang-dao-chu-mr-ji-lu.html</link><description>```python&#13;
+import os&#13;
+import requests&#13;
+import pandas as pd&#13;
+from datetime import datetime, timedelta&#13;
+import logging&#13;
+&#13;
+# 配置&#13;
+BASE_URL = 'http://172.17.0.100:8080/api/v4'&#13;
+PRIVATE_TOKEN = 'h_8duuSiAJsP4Kd-uEyn'&#13;
+USERNAME = 'kanghongyan'  # 替换为实际的用户名&#13;
+START_DATE = '2024-01-01'&#13;
+END_DATE = '2025-01-01'&#13;
+OUTPUT_FILE_CSV = 'merge_requests_report.csv'&#13;
+OUTPUT_FILE_EXCEL = 'merge_requests_report.xlsx'&#13;
+&#13;
+# 初始化日志&#13;
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')&#13;
+&#13;
+# 请求头&#13;
+HEADERS = {'PRIVATE-TOKEN': PRIVATE_TOKEN}&#13;
+&#13;
+# 获取用户 ID&#13;
+def fetch_author_id(username):&#13;
+    url = f'{BASE_URL}/users'&#13;
+    params = {'username': username}&#13;
+    try:&#13;
+        response = requests.get(url, headers=HEADERS, params=params)&#13;
+        response.raise_for_status()&#13;
+        users = response.json()&#13;
+        if users:&#13;
+            return users[0]['id']&#13;
+        else:&#13;
+            logging.error(f'未找到用户名 {username} 对应的用户。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/gitlab%20-pi-liang-dao-chu-mr-ji-lu.html</guid><pubDate>Fri, 27 Dec 2024 07:57:12 +0000</pubDate></item><item><title>Github上热门 C 语言项目汇总
 
 </title><link>https://tangrenbin.github.io/post/Github-shang-re-men-%20C%20-yu-yan-xiang-mu-hui-zong---.html</link><description>[Github上热门 C 语言项目汇总](https://mp.weixin.qq.com/s/a9PvRgriDJ_E17hvX82EVQ)。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/Github-shang-re-men-%20C%20-yu-yan-xiang-mu-hui-zong---.html</guid><pubDate>Wed, 07 Aug 2024 05:07:29 +0000</pubDate></item><item><title>Python 批量计算两个不同格式时间戳之间的差异</title><link>https://tangrenbin.github.io/post/Python%20-pi-liang-ji-suan-liang-ge-bu-tong-ge-shi-shi-jian-chuo-zhi-jian-de-cha-yi.html</link><description>```python&#13;
 from datetime import datetime&#13;
