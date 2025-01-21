@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# Gemini Chat Python 客户端
+
+这是一个基于 Python 实现的 Gemini AI 聊天客户端，提供了更多高级功能和更好的异步性能。">
+<meta property="og:title" content="Gemini Chat Python 客户端">
+<meta property="og:description" content="# Gemini Chat Python 客户端
+
+这是一个基于 Python 实现的 Gemini AI 聊天客户端，提供了更多高级功能和更好的异步性能。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://tangrenbin.github.io/post/Gemini%20Chat%20Python%20-ke-hu-duan.html">
+<meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
+<title>Gemini Chat Python 客户端</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Gemini Chat Python 客户端</h1>
+<div class="title-right">
+    <a href="https://tangrenbin.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/Tangrenbin/tangrenbin.github.io/issues/22" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>Gemini Chat Python 客户端</h1>
+<p>这是一个基于 Python 实现的 Gemini AI 聊天客户端，提供了更多高级功能和更好的异步性能。</p>
+<h2>功能特点</h2>
+<ul>
+<li>🔄 自动获取最新的 Gemini 模型列表</li>
+<li>🤖 支持多个 Gemini 模型系列（Pro/Flash）</li>
+<li>💾 支持对话历史记录（默认保留最近10轮对话）</li>
+<li>🔄 支持实时切换和刷新模型</li>
+<li>🧹 支持清空对话历史</li>
+<li>📦 自动检查并安装依赖</li>
+<li>⚡ 异步实现，响应更快</li>
+<li>🛡️ 完善的错误处理机制</li>
+</ul>
+<h2>系统要求</h2>
+<ul>
+<li>Python 3.7+</li>
+<li>pip（Python包管理器）</li>
+<li>网络连接</li>
+</ul>
+<h2>依赖项</h2>
+<p>脚本会自动检查并安装以下依赖：</p>
+<ul>
+<li>aiohttp：用于异步HTTP请求</li>
+<li>asyncio：用于异步编程支持</li>
+</ul>
+<h2>安装和运行</h2>
+<ol>
+<li>
+<p>下载脚本：<br>
+直接复制脚本内容到本地文件</p>
+</li>
+<li>
+<p>运行脚本：</p>
+</li>
+</ol>
+<div class="highlight highlight-source-shell"><pre class="notranslate">python3 gemini_chat.py</pre></div>
+<p>首次运行时，如果缺少必要的依赖项，脚本会自动尝试安装。</p>
+<h2>使用说明</h2>
+<h3>基本操作</h3>
+<ol>
+<li>启动后，脚本会自动获取并显示可用的模型列表</li>
+<li>可以通过输入编号选择模型，或直接回车使用默认模型（最新版本）</li>
+<li>在聊天界面中支持以下命令：
+<ul>
+<li>直接输入文字进行对话</li>
+<li>输入 <code class="notranslate">退出</code> 或 <code class="notranslate">quit</code> 或 <code class="notranslate">exit</code> 结束对话</li>
+<li>输入 <code class="notranslate">切换</code> 可以切换到其他模型</li>
+<li>输入 <code class="notranslate">刷新</code> 可以刷新模型列表</li>
+<li>输入 <code class="notranslate">清空</code> 可以清空对话历史</li>
+</ul>
+</li>
+</ol>
+<h3>高级功能</h3>
+<ol>
+<li>
+<p>对话历史记录</p>
+<ul>
+<li>自动保存最近10轮对话</li>
+<li>切换模型时自动清空历史</li>
+<li>可以随时手动清空历史</li>
+</ul>
+</li>
+<li>
+<p>异步处理</p>
+<ul>
+<li>使用 aiohttp 进行异步HTTP请求</li>
+<li>提供更好的响应性能</li>
+</ul>
+</li>
+<li>
+<p>错误处理</p>
+<ul>
+<li>网络错误自动重试</li>
+<li>友好的错误提示</li>
+<li>优雅的程序退出处理</li>
+</ul>
+</li>
+</ol>
+<h3>模型说明</h3>
+<ul>
+<li>pro 系列：响应质量更高，适合需要深度思考的场景</li>
+<li>flash 系列：响应速度更快，适合日常对话</li>
+<li>版本号越大代表模型越新</li>
+</ul>
+<h2>开发者说明</h2>
+<h3>代码结构</h3>
+<ul>
+<li><code class="notranslate">GeminiChat</code> 类：主要的聊天实现
+<ul>
+<li><code class="notranslate">check_dependencies()</code>: 依赖检查</li>
+<li><code class="notranslate">fetch_models()</code>: 获取模型列表</li>
+<li><code class="notranslate">chat_completion()</code>: 发送聊天请求</li>
+<li><code class="notranslate">save_conversation()</code>: 保存对话历史</li>
+<li><code class="notranslate">get_conversation_context()</code>: 获取对话上下文</li>
+</ul>
+</li>
+</ul>
+<h3>类型注解</h3>
+<p>代码使用了 Python 类型注解，提供更好的代码提示和错误检查：</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">from</span> <span class="pl-s1">typing</span> <span class="pl-k">import</span> <span class="pl-v">Dict</span>, <span class="pl-v">List</span>, <span class="pl-v">Optional</span></pre></div>
+<h2>注意事项</h2>
+<ol>
+<li>确保 Python 版本 &gt;= 3.7</li>
+<li>首次运行时需要网络连接以安装依赖</li>
+<li>API 密钥已内置，无需额外配置</li>
+<li>建议在虚拟环境中运行</li>
+</ol>
+<h2>常见问题</h2>
+<ol>
+<li>
+<p>如果遇到依赖安装失败：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">pip install aiohttp asyncio</pre></div>
+</li>
+<li>
+<p>如果遇到权限问题：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo python3 gemini_chat.py</pre></div>
+</li>
+<li>
+<p>如果遇到网络问题：</p>
+<ul>
+<li>检查网络连接</li>
+<li>确认 API 服务器可访问</li>
+<li>检查防火墙设置</li>
+</ul>
+</li>
+</ol>
+<h2>更新日志</h2>
+<h3>v1.0.0</h3>
+<ul>
+<li>初始版本发布</li>
+<li>支持动态获取模型列表</li>
+<li>添加对话历史功能</li>
+<li>支持模型切换和刷新</li>
+<li>添加自动依赖安装</li>
+<li>添加类型注解</li>
+<li>优化错误处理</li>
+</ul>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c">#!/usr/bin/env python3</span>
+<span class="pl-c"># -*- coding: utf-8 -*-</span>
+
+<span class="pl-k">import</span> <span class="pl-s1">aiohttp</span>
+<span class="pl-k">import</span> <span class="pl-s1">asyncio</span>
+<span class="pl-k">import</span> <span class="pl-s1">json</span>
+<span class="pl-k">import</span> <span class="pl-s1">sys</span>
+<span class="pl-k">import</span> <span class="pl-s1">pkg_resources</span>
+<span class="pl-k">import</span> <span class="pl-s1">subprocess</span>
+<span class="pl-k">from</span> <span class="pl-s1">typing</span> <span class="pl-k">import</span> <span class="pl-v">Dict</span>, <span class="pl-v">List</span>, <span class="pl-v">Optional</span>
+
+<span class="pl-k">class</span> <span class="pl-v">GeminiChat</span>:
+    <span class="pl-k">def</span> <span class="pl-en">__init__</span>(<span class="pl-s1">self</span>, <span class="pl-s1">api_key</span>: <span class="pl-smi">str</span>):
+        <span class="pl-s1">self</span>.<span class="pl-c1">api_key</span> <span class="pl-c1">=</span> <span class="pl-s1">api_key</span>
+        <span class="pl-s1">self</span>.<span class="pl-c1">base_url</span> <span class="pl-c1">=</span> <span class="pl-s">"https://gemini.tangrenbin.us.kg"</span>
+        <span class="pl-s1">self</span>.<span class="pl-c1">messages</span> <span class="pl-c1">=</span> []
+        <span class="pl-s1">self</span>.<span class="pl-c1">conversation_history</span> <span class="pl-c1">=</span> []  <span class="pl-c"># 存储对话历史</span>
+        <span class="pl-s1">self</span>.<span class="pl-c1">max_history</span> <span class="pl-c1">=</span> <span class="pl-c1">10</span>  <span class="pl-c"># 默认保留最近10轮对话</span>
+
+    <span class="pl-en">@<span class="pl-s1">staticmethod</span></span>
+    <span class="pl-k">def</span> <span class="pl-en">check_dependencies</span>() <span class="pl-c1">-&gt;</span> <span class="pl-c1">None</span>:
+        <span class="pl-s">"""检查并安装必要的依赖"""</span>
+        <span class="pl-s1">required</span> <span class="pl-c1">=</span> {<span class="pl-s">'aiohttp'</span>, <span class="pl-s">'asyncio'</span>}
+        <span class="pl-s1">installed</span> <span class="pl-c1">=</span> {<span class="pl-s1">pkg</span>.<span class="pl-c1">key</span> <span class="pl-k">for</span> <span class="pl-s1">pkg</span> <span class="pl-c1">in</span> <span class="pl-s1">pkg_resources</span>.<span class="pl-c1">working_set</span>}
+        <span class="pl-s1">missing</span> <span class="pl-c1">=</span> <span class="pl-s1">required</span> <span class="pl-c1">-</span> <span class="pl-s1">installed</span>
+
+        <span class="pl-k">if</span> <span class="pl-s1">missing</span>:
+            <span class="pl-en">print</span>(<span class="pl-s">"检测到缺少必要的依赖项，正在安装..."</span>)
+            <span class="pl-k">try</span>:
+                <span class="pl-s1">subprocess</span>.<span class="pl-c1">check_call</span>([<span class="pl-s1">sys</span>.<span class="pl-c1">executable</span>, <span class="pl-s">'-m'</span>, <span class="pl-s">'pip'</span>, <span class="pl-s">'install'</span>, <span class="pl-c1">*</span><span class="pl-s1">missing</span>])
+                <span class="pl-en">print</span>(<span class="pl-s">"依赖安装完成！"</span>)
+            <span class="pl-k">except</span> <span class="pl-s1">subprocess</span>.<span class="pl-c1">CalledProcessError</span>:
+                <span class="pl-en">print</span>(<span class="pl-s">"错误：依赖安装失败，请手动安装以下包："</span>)
+                <span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>"</span>.<span class="pl-c1">join</span>(<span class="pl-s1">missing</span>))
+                <span class="pl-s1">sys</span>.<span class="pl-c1">exit</span>(<span class="pl-c1">1</span>)
+
+    <span class="pl-k">async</span> <span class="pl-k">def</span> <span class="pl-en">fetch_models</span>(<span class="pl-s1">self</span>) <span class="pl-c1">-&gt;</span> <span class="pl-v">Dict</span>[<span class="pl-smi">str</span>, <span class="pl-smi">str</span>]:
+        <span class="pl-s">"""从API获取可用的模型列表"""</span>
+        <span class="pl-en">print</span>(<span class="pl-s">"正在获取可用模型列表..."</span>)
+        <span class="pl-k">try</span>:
+            <span class="pl-k">async</span> <span class="pl-k">with</span> <span class="pl-s1">aiohttp</span>.<span class="pl-c1">ClientSession</span>() <span class="pl-k">as</span> <span class="pl-s1">session</span>:
+                <span class="pl-k">async</span> <span class="pl-k">with</span> <span class="pl-s1">session</span>.<span class="pl-c1">get</span>(
+                    <span class="pl-s">f"<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">self</span>.<span class="pl-c1">base_url</span><span class="pl-kos">}</span></span>/v1/models"</span>,
+                    <span class="pl-s1">headers</span><span class="pl-c1">=</span>{<span class="pl-s">'Authorization'</span>: <span class="pl-s">f'Bearer <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">self</span>.<span class="pl-c1">api_key</span><span class="pl-kos">}</span></span>'</span>}
+                ) <span class="pl-k">as</span> <span class="pl-s1">response</span>:
+                    <span class="pl-k">if</span> <span class="pl-s1">response</span>.<span class="pl-c1">status</span> <span class="pl-c1">==</span> <span class="pl-c1">200</span>:
+                        <span class="pl-s1">data</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">response</span>.<span class="pl-c1">json</span>()
+                        <span class="pl-s1">models</span> <span class="pl-c1">=</span> {}
+                        <span class="pl-s1">index</span> <span class="pl-c1">=</span> <span class="pl-c1">1</span>
+                        <span class="pl-k">for</span> <span class="pl-s1">model</span> <span class="pl-c1">in</span> <span class="pl-s1">data</span>[<span class="pl-s">'data'</span>]:
+                            <span class="pl-k">if</span> <span class="pl-s">'gemini'</span> <span class="pl-c1">in</span> <span class="pl-s1">model</span>[<span class="pl-s">'id'</span>]:
+                                <span class="pl-s1">models</span>[<span class="pl-en">str</span>(<span class="pl-s1">index</span>)] <span class="pl-c1">=</span> <span class="pl-s1">model</span>[<span class="pl-s">'id'</span>]
+                                <span class="pl-s1">index</span> <span class="pl-c1">+=</span> <span class="pl-c1">1</span>
+                        <span class="pl-k">return</span> <span class="pl-s1">models</span>
+                    <span class="pl-k">else</span>:
+                        <span class="pl-s1">error_text</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">response</span>.<span class="pl-c1">text</span>()
+                        <span class="pl-k">raise</span> <span class="pl-en">Exception</span>(<span class="pl-s">f"获取模型列表失败: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">error_text</span><span class="pl-kos">}</span></span>"</span>)
+        <span class="pl-k">except</span> <span class="pl-v">Exception</span> <span class="pl-k">as</span> <span class="pl-s1">e</span>:
+            <span class="pl-en">print</span>(<span class="pl-s">f"错误：无法获取模型列表 - <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">str</span>(<span class="pl-s1">e</span>)<span class="pl-kos">}</span></span>"</span>)
+            <span class="pl-s1">sys</span>.<span class="pl-c1">exit</span>(<span class="pl-c1">1</span>)
+
+    <span class="pl-k">def</span> <span class="pl-en">print_models</span>(<span class="pl-s1">self</span>, <span class="pl-s1">models</span>: <span class="pl-v">Dict</span>[<span class="pl-smi">str</span>, <span class="pl-smi">str</span>], <span class="pl-s1">default_model</span>: <span class="pl-smi">str</span>) <span class="pl-c1">-&gt;</span> <span class="pl-c1">None</span>:
+        <span class="pl-s">"""打印模型列表"""</span>
+        <span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>可用模型列表："</span>)
+        <span class="pl-en">print</span>(<span class="pl-s">"注意：不同模型有不同的特点："</span>)
+        <span class="pl-en">print</span>(<span class="pl-s">"- pro系列：响应质量更高"</span>)
+        <span class="pl-en">print</span>(<span class="pl-s">"- flash系列：响应速度更快"</span>)
+        <span class="pl-en">print</span>(<span class="pl-s">"- 数字越大代表版本越新"</span>)
+        <span class="pl-en">print</span>(<span class="pl-s">f"- 默认使用最新的模型: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">models</span>[<span class="pl-s1">default_model</span>]<span class="pl-kos">}</span></span><span class="pl-cce">\n</span>"</span>)
+
+        <span class="pl-k">for</span> <span class="pl-s1">key</span>, <span class="pl-s1">model</span> <span class="pl-c1">in</span> <span class="pl-s1">models</span>.<span class="pl-c1">items</span>():
+            <span class="pl-en">print</span>(<span class="pl-s">f"<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">key</span><span class="pl-kos">}</span></span>. <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">model</span><span class="pl-kos">}</span></span>"</span> <span class="pl-c1">+</span> (<span class="pl-s">" (默认)"</span> <span class="pl-k">if</span> <span class="pl-s1">key</span> <span class="pl-c1">==</span> <span class="pl-s1">default_model</span> <span class="pl-k">else</span> <span class="pl-s">""</span>))
+
+    <span class="pl-k">def</span> <span class="pl-en">save_conversation</span>(<span class="pl-s1">self</span>, <span class="pl-s1">role</span>: <span class="pl-smi">str</span>, <span class="pl-s1">content</span>: <span class="pl-smi">str</span>) <span class="pl-c1">-&gt;</span> <span class="pl-c1">None</span>:
+        <span class="pl-s">"""保存对话历史"""</span>
+        <span class="pl-s1">self</span>.<span class="pl-c1">conversation_history</span>.<span class="pl-c1">append</span>({<span class="pl-s">"role"</span>: <span class="pl-s1">role</span>, <span class="pl-s">"content"</span>: <span class="pl-s1">content</span>})
+        <span class="pl-k">if</span> <span class="pl-en">len</span>(<span class="pl-s1">self</span>.<span class="pl-c1">conversation_history</span>) <span class="pl-c1">&gt;</span> <span class="pl-s1">self</span>.<span class="pl-c1">max_history</span> <span class="pl-c1">*</span> <span class="pl-c1">2</span>:  <span class="pl-c"># 每轮对话包含用户和AI两条消息</span>
+            <span class="pl-s1">self</span>.<span class="pl-c1">conversation_history</span> <span class="pl-c1">=</span> <span class="pl-s1">self</span>.<span class="pl-c1">conversation_history</span>[<span class="pl-c1">-</span><span class="pl-s1">self</span>.<span class="pl-c1">max_history</span> <span class="pl-c1">*</span> <span class="pl-c1">2</span>:]
+
+    <span class="pl-k">def</span> <span class="pl-en">get_conversation_context</span>(<span class="pl-s1">self</span>) <span class="pl-c1">-&gt;</span> <span class="pl-v">List</span>[<span class="pl-v">Dict</span>[<span class="pl-smi">str</span>, <span class="pl-smi">str</span>]]:
+        <span class="pl-s">"""获取对话上下文"""</span>
+        <span class="pl-k">return</span> [{<span class="pl-s">"role"</span>: <span class="pl-s">"system"</span>, <span class="pl-s">"content"</span>: <span class="pl-s">"你是一个有帮助的AI助手。"</span>}] <span class="pl-c1">+</span> <span class="pl-s1">self</span>.<span class="pl-c1">conversation_history</span>
+
+    <span class="pl-k">async</span> <span class="pl-k">def</span> <span class="pl-en">chat_completion</span>(<span class="pl-s1">self</span>, <span class="pl-s1">model</span>: <span class="pl-smi">str</span>, <span class="pl-s1">temperature</span>: <span class="pl-smi">float</span> <span class="pl-c1">=</span> <span class="pl-c1">0.7</span>) <span class="pl-c1">-&gt;</span> <span class="pl-smi">str</span>:
+        <span class="pl-s">"""发送聊天请求"""</span>
+        <span class="pl-k">try</span>:
+            <span class="pl-k">async</span> <span class="pl-k">with</span> <span class="pl-s1">aiohttp</span>.<span class="pl-c1">ClientSession</span>() <span class="pl-k">as</span> <span class="pl-s1">session</span>:
+                <span class="pl-k">async</span> <span class="pl-k">with</span> <span class="pl-s1">session</span>.<span class="pl-c1">post</span>(
+                    <span class="pl-s">f"<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">self</span>.<span class="pl-c1">base_url</span><span class="pl-kos">}</span></span>/v1/chat/completions"</span>,
+                    <span class="pl-s1">headers</span><span class="pl-c1">=</span>{
+                        <span class="pl-s">'Content-Type'</span>: <span class="pl-s">'application/json'</span>,
+                        <span class="pl-s">'Authorization'</span>: <span class="pl-s">f'Bearer <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">self</span>.<span class="pl-c1">api_key</span><span class="pl-kos">}</span></span>'</span>
+                    },
+                    <span class="pl-s1">json</span><span class="pl-c1">=</span>{
+                        <span class="pl-s">"model"</span>: <span class="pl-s1">model</span>,
+                        <span class="pl-s">"messages"</span>: <span class="pl-s1">self</span>.<span class="pl-c1">get_conversation_context</span>(),
+                        <span class="pl-s">"stream"</span>: <span class="pl-c1">False</span>,
+                        <span class="pl-s">"temperature"</span>: <span class="pl-s1">temperature</span>,
+                        <span class="pl-s">"max_tokens"</span>: <span class="pl-c1">2048</span>
+                    }
+                ) <span class="pl-k">as</span> <span class="pl-s1">response</span>:
+                    <span class="pl-k">if</span> <span class="pl-s1">response</span>.<span class="pl-c1">status</span> <span class="pl-c1">==</span> <span class="pl-c1">200</span>:
+                        <span class="pl-s1">data</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">response</span>.<span class="pl-c1">json</span>()
+                        <span class="pl-k">return</span> <span class="pl-s1">data</span>[<span class="pl-s">'choices'</span>][<span class="pl-c1">0</span>][<span class="pl-s">'message'</span>][<span class="pl-s">'content'</span>]
+                    <span class="pl-k">else</span>:
+                        <span class="pl-s1">error_text</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">response</span>.<span class="pl-c1">text</span>()
+                        <span class="pl-k">raise</span> <span class="pl-en">Exception</span>(<span class="pl-s">f"API错误: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">error_text</span><span class="pl-kos">}</span></span>"</span>)
+        <span class="pl-k">except</span> <span class="pl-v">Exception</span> <span class="pl-k">as</span> <span class="pl-s1">e</span>:
+            <span class="pl-k">return</span> <span class="pl-s">f"错误：<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">str</span>(<span class="pl-s1">e</span>)<span class="pl-kos">}</span></span>"</span>
+
+    <span class="pl-k">async</span> <span class="pl-k">def</span> <span class="pl-en">chat</span>(<span class="pl-s1">self</span>) <span class="pl-c1">-&gt;</span> <span class="pl-c1">None</span>:
+        <span class="pl-s">"""主对话循环"""</span>
+        <span class="pl-c"># 获取模型列表</span>
+        <span class="pl-s1">models</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">self</span>.<span class="pl-c1">fetch_models</span>()
+        <span class="pl-s1">default_model</span> <span class="pl-c1">=</span> <span class="pl-en">str</span>(<span class="pl-en">len</span>(<span class="pl-s1">models</span>))  <span class="pl-c"># 使用最后一个模型作为默认值</span>
+        
+        <span class="pl-k">while</span> <span class="pl-c1">True</span>:
+            <span class="pl-s1">self</span>.<span class="pl-c1">print_models</span>(<span class="pl-s1">models</span>, <span class="pl-s1">default_model</span>)
+            <span class="pl-en">print</span>(<span class="pl-s">f"<span class="pl-cce">\n</span>直接按回车使用默认模型(<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">models</span>[<span class="pl-s1">default_model</span>]<span class="pl-kos">}</span></span>)"</span>)
+            <span class="pl-s1">model_choice</span> <span class="pl-c1">=</span> <span class="pl-en">input</span>(<span class="pl-s">"请选择模型编号: "</span>).<span class="pl-c1">strip</span>()
+            
+            <span class="pl-k">if</span> <span class="pl-c1">not</span> <span class="pl-s1">model_choice</span>:
+                <span class="pl-s1">model_choice</span> <span class="pl-c1">=</span> <span class="pl-s1">default_model</span>
+                
+            <span class="pl-k">if</span> <span class="pl-s1">model_choice</span> <span class="pl-c1">in</span> <span class="pl-s1">models</span>:
+                <span class="pl-k">break</span>
+            <span class="pl-en">print</span>(<span class="pl-s">"无效的选择，请重试。"</span>)
+        
+        <span class="pl-s1">model</span> <span class="pl-c1">=</span> <span class="pl-s1">models</span>[<span class="pl-s1">model_choice</span>]
+        <span class="pl-en">print</span>(<span class="pl-s">f"<span class="pl-cce">\n</span>已选择模型: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">model</span><span class="pl-kos">}</span></span>"</span>)
+        <span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>开始对话 (输入'退出'结束对话，输入'切换'可以切换模型，输入'刷新'可以刷新模型列表，输入'清空'可以清空对话历史)"</span>)
+        
+        <span class="pl-k">while</span> <span class="pl-c1">True</span>:
+            <span class="pl-s1">user_input</span> <span class="pl-c1">=</span> <span class="pl-en">input</span>(<span class="pl-s">"<span class="pl-cce">\n</span>你: "</span>).<span class="pl-c1">strip</span>()
+            
+            <span class="pl-k">if</span> <span class="pl-s1">user_input</span>.<span class="pl-c1">lower</span>() <span class="pl-c1">in</span> [<span class="pl-s">'退出'</span>, <span class="pl-s">'quit'</span>, <span class="pl-s">'exit'</span>]:
+                <span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>感谢使用！再见！"</span>)
+                <span class="pl-k">break</span>
+                
+            <span class="pl-k">if</span> <span class="pl-s1">user_input</span>.<span class="pl-c1">lower</span>() <span class="pl-c1">==</span> <span class="pl-s">'切换'</span>:
+                <span class="pl-s1">self</span>.<span class="pl-c1">conversation_history</span> <span class="pl-c1">=</span> []  <span class="pl-c"># 切换模型时清空对话历史</span>
+                <span class="pl-k">await</span> <span class="pl-s1">self</span>.<span class="pl-c1">chat</span>()
+                <span class="pl-k">return</span>
+                
+            <span class="pl-k">if</span> <span class="pl-s1">user_input</span>.<span class="pl-c1">lower</span>() <span class="pl-c1">==</span> <span class="pl-s">'刷新'</span>:
+                <span class="pl-s1">models</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">self</span>.<span class="pl-c1">fetch_models</span>()
+                <span class="pl-s1">self</span>.<span class="pl-c1">print_models</span>(<span class="pl-s1">models</span>, <span class="pl-s1">model_choice</span>)
+                <span class="pl-en">print</span>(<span class="pl-s">f"<span class="pl-cce">\n</span>继续使用当前模型: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">model</span><span class="pl-kos">}</span></span>"</span>)
+                <span class="pl-k">continue</span>
+                
+            <span class="pl-k">if</span> <span class="pl-s1">user_input</span>.<span class="pl-c1">lower</span>() <span class="pl-c1">==</span> <span class="pl-s">'清空'</span>:
+                <span class="pl-s1">self</span>.<span class="pl-c1">conversation_history</span> <span class="pl-c1">=</span> []
+                <span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>对话历史已清空"</span>)
+                <span class="pl-k">continue</span>
+            
+            <span class="pl-k">if</span> <span class="pl-s1">user_input</span>:
+                <span class="pl-c"># 保存用户输入</span>
+                <span class="pl-s1">self</span>.<span class="pl-c1">save_conversation</span>(<span class="pl-s">"user"</span>, <span class="pl-s1">user_input</span>)
+                
+                <span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>正在等待AI响应..."</span>)
+                <span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">self</span>.<span class="pl-c1">chat_completion</span>(<span class="pl-s1">model</span>)
+                <span class="pl-en">print</span>(<span class="pl-s">f"<span class="pl-cce">\n</span>AI: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">response</span><span class="pl-kos">}</span></span>"</span>)
+                
+                <span class="pl-c"># 保存AI回复</span>
+                <span class="pl-s1">self</span>.<span class="pl-c1">save_conversation</span>(<span class="pl-s">"assistant"</span>, <span class="pl-s1">response</span>)
+
+<span class="pl-k">async</span> <span class="pl-k">def</span> <span class="pl-en">main</span>():
+    <span class="pl-c"># 检查依赖</span>
+    <span class="pl-v">GeminiChat</span>.<span class="pl-c1">check_dependencies</span>()
+    
+    <span class="pl-s1">api_key</span> <span class="pl-c1">=</span> <span class="pl-s">"AIzaSyDOLKXvMTqw0EgLHVOA13fgBZHbS8NEvBs"</span>
+    <span class="pl-s1">chat</span> <span class="pl-c1">=</span> <span class="pl-en">GeminiChat</span>(<span class="pl-s1">api_key</span>)
+    <span class="pl-k">await</span> <span class="pl-s1">chat</span>.<span class="pl-c1">chat</span>()
+
+<span class="pl-k">if</span> <span class="pl-s1">__name__</span> <span class="pl-c1">==</span> <span class="pl-s">"__main__"</span>:
+    <span class="pl-k">try</span>:
+        <span class="pl-s1">asyncio</span>.<span class="pl-c1">run</span>(<span class="pl-en">main</span>())
+    <span class="pl-k">except</span> <span class="pl-v">KeyboardInterrupt</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>程序已被用户中断。再见！"</span>)
+    <span class="pl-k">except</span> <span class="pl-v">Exception</span> <span class="pl-k">as</span> <span class="pl-s1">e</span>:
+        <span class="pl-en">print</span>(<span class="pl-s">f"<span class="pl-cce">\n</span>程序遇到错误: <span class="pl-s1"><span class="pl-kos">{</span><span class="pl-en">str</span>(<span class="pl-s1">e</span>)<span class="pl-kos">}</span></span>"</span>) </pre></div></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://tangrenbin.github.io">唐任斌的知识库</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行"+diffDay+"天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","Tangrenbin/tangrenbin.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>
