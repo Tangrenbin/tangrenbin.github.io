@@ -1,5 +1,135 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的知识库</title><link>https://tangrenbin.github.io</link><description>生活或者工作中遇到的一些知识点的积累</description><copyright>唐任斌的知识库</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Tue, 21 Jan 2025 09:49:41 +0000</lastBuildDate><managingEditor>唐任斌的知识库</managingEditor><ttl>60</ttl><webMaster>唐任斌的知识库</webMaster><item><title>代码评审自动化工具</title><link>https://tangrenbin.github.io/post/dai-ma-ping-shen-zi-dong-hua-gong-ju.html</link><description># 代码评审自动化工具
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的知识库</title><link>https://tangrenbin.github.io</link><description>生活或者工作中遇到的一些知识点的积累</description><copyright>唐任斌的知识库</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Sun, 30 Mar 2025 14:13:45 +0000</lastBuildDate><managingEditor>唐任斌的知识库</managingEditor><ttl>60</ttl><webMaster>唐任斌的知识库</webMaster><item><title>简历</title><link>https://tangrenbin.github.io/post/jian-li.html</link><description># 个人信息
+- 姓名：唐任斌
+- 学历：本科
+- 手机（微信）：18894242252
+- 职业定位：嵌入式软件工程师 / 项目经理
+
+# 专业技能
+- 精通嵌入式应用软件开发，具备扎实的C语言编程功底
+- 深入掌握电力载波通信技术及相关协议：
+  - 《QGDW 10376.2-2019 用电信息采集系统通信协议第2部分：集中器本地通信模块接口》
+  - 《DLT-645-2007-多功能电能表通信协议2010》
+  - 《HPLC技术应用手册-中国电科院V2 7-20190821》
+  - 《面向对象的用电信息数据交换协议（20210910）》
+  - 《低压电力线宽带载波通信规约 第6部分：应用层通信协议》
+  - 《低压电力线宽带载波通信规约 第5部分：数据链路层通信协议》
+- 具备项目管理经验，能够独立负责项目规划与团队管理
+- 擅长系统分析与问题解决，具有良好的技术文档编写能力
+- 创新性地运用AI工具提升团队开发效率，实现技术赋能
+
+# 工作经历
+
+## 北京中宸微电子 | 2021.12 - 至今
+核心职责：
+- 载波通信模块应用组组长：带领团队完成多省电力公司定制化需求开发，保障送检和供货工作正常进行
+- 中压载波机项目经理：统筹项目整体规划与执行
+- 3780A载波模块项目经理：负责产品研发全流程管理
+
+主要成就：
+1. 主导载波通信模块核心架构设计，显著提升系统性能和可维护性
+2. 成功完成多个省份电力公司的技术需求，确保项目高质量交付
+3. 建立完善的项目管理体系，有效提升团队研发效率
+
+# 核心项目开发经验
+
+**精通国网、南网及各省份应用层业务，掌握度达70%以上**
+
+1. **福建STA**
+   - NTB记录上报
+   - 引脚变位上报
+   - 数据冻结、不一致、幅值越限、区间越限四类本地任务及产生数据的增删改查
+   - 扩展645/698协议栈设计与实现
+   - 精通福建STA所有业务
+
+2. **江苏采集器/CCO/STA**
+   - 二采缩位搜表
+   - CCO波特率协商
+   - 时钟维护
+   - 表类型探测
+   - 疑似停复电
+   - 数据冻结与点名上报
+
+3. **陕西（湖南）/CCO/STA**
+   - 时钟超差上报与时钟维护
+   - 零火线异常电流上报
+   - 数据冻结
+
+4. **三圣（科大）IOT-C**
+   - 采集器模式切换
+   - 入网地址切换
+   - 制定STA为下级设备升级标准及撰写适配指南
+
+5. **国网（南网）基础采集器/CCO/STA**
+    - 绑表、搜表、验表
+    - 事件上报
+    - 灯语
+    - 时钟管理
+    - 升级
+    - 抄控器
+    - 停复电上报
+    - 抄表
+
+6. **中压载波机**
+   - 相同硬件下主机和从机程序切换
+   - 窄带宽带链路可用性网络评估
+
+7. **南网电鸿操作系统适配**
+   - 创新性封装电鸿操作系统接口，实现无缝兼容
+   - 利用submodule技术，2周内完成系统迁移并通过认证
+   - 创新应用差分升级技术，解决升级空间受限问题
+
+8. **模块出厂工装**
+   - 载波（无线）灵敏度测试
+   - 动态（静态）功耗测试
+   - 创新使用省份代码配置方案，优化工厂生产流程，降低生成过程中对软件的依赖
+
+9. **载波监听单元项目**
+   - 成功移植文件操作系统，实现SD卡数据存储
+   - 协助完成专利申请，助力考核指标达成
+
+# 框架设计经验
+
+1. **通用数据冻结（曲线存储）框架**
+    - 统一多省份任务执行标准，降低70%维护成本
+    - 创新引入FlashDB解决方案，提升系统性能与可扩展性
+    - 创新引入压缩算法，在有限的FLASH空间内存储更多的数据，降低硬件成本
+    - 显著降低缺陷密度，从千行10个降至3个
+
+2. **福建698扩展OAD管理框架**
+    - 设计模块化数据处理架构
+    - 实现功能解耦与灵活配置
+
+3. **各省份灯语框架**
+    - 统一各省份不同的灯语需求的实现逻辑，降低维护人力成本
+
+# 管理经验
+
+1. **GIT代码仓库管理创新**
+   - 制定并推行《GIT代码提交与合并规范》
+   - 建立分支管理体系
+   - 引入submodule模块化管理
+   - 构建CI/CD自动化代码扫描体系
+   - 创新应用AI技术优化代码评审
+
+2. **团队人员管理**
+   - 参与技术人员面试与招聘
+   - 设计并实施团队绩效考核方案
+   - 负责团队成员的技术培训与能力提升
+   - 进行工作任务拆分、分配与进度跟踪
+   - 严格要求先做详细设计然后评审设计最后编码的开发流程
+
+3. **代码质量管理**
+   - 主导制定《中宸代码规范企业标准》
+   - 实施函数复杂度控制（≤15）
+   - 规范化注释与命名标准
+   - 推行防御性编程理念
+
+# 个人特点
+- 注重团队协作，乐于分享技术经验
+- 保持开放学习的心态，积极接纳新技术
+- 善于倾听与沟通，协调推进项目开展
+- 踏实认真，勇于面对挑战。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/jian-li.html</guid><pubDate>Sun, 30 Mar 2025 14:11:50 +0000</pubDate></item><item><title>代码评审自动化工具</title><link>https://tangrenbin.github.io/post/dai-ma-ping-shen-zi-dong-hua-gong-ju.html</link><description># 代码评审自动化工具
 
 这是一个基于 Gemini API 的自动化代码评审工具，可以自动分析 Git 仓库中的代码变更并生成评审报告。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/dai-ma-ping-shen-zi-dong-hua-gong-ju.html</guid><pubDate>Tue, 21 Jan 2025 09:49:13 +0000</pubDate></item><item><title>Gemini Chat Python 客户端</title><link>https://tangrenbin.github.io/post/Gemini%20Chat%20Python%20-ke-hu-duan.html</link><description># Gemini Chat Python 客户端
 
