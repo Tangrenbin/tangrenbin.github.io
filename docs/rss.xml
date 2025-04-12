@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的知识库</title><link>https://tangrenbin.github.io</link><description>生活或者工作中遇到的一些知识点的积累</description><copyright>唐任斌的知识库</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Thu, 03 Apr 2025 03:13:16 +0000</lastBuildDate><managingEditor>唐任斌的知识库</managingEditor><ttl>60</ttl><webMaster>唐任斌的知识库</webMaster><item><title>将来也许能用到的开源库</title><link>https://tangrenbin.github.io/post/jiang-lai-ye-xu-neng-yong-dao-de-kai-yuan-ku.html</link><description># 内存管理
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的知识库</title><link>https://tangrenbin.github.io</link><description>生活或者工作中遇到的一些知识点的积累</description><copyright>唐任斌的知识库</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Sat, 12 Apr 2025 00:59:42 +0000</lastBuildDate><managingEditor>唐任斌的知识库</managingEditor><ttl>60</ttl><webMaster>唐任斌的知识库</webMaster><item><title>将来也许能用到的开源库</title><link>https://tangrenbin.github.io/post/jiang-lai-ye-xu-neng-yong-dao-de-kai-yuan-ku.html</link><description># 内存管理
 
 -  [umm_malloc](https://github.com/rhempel/umm_malloc)
 -  [lwmem](https://github.com/MaJerle/lwmem)
@@ -8,7 +8,11 @@
 
 - [uLog](https://github.com/rdpoor/ulog)
 - [trice](https://github.com/rokath/trice)
-- [lwprintf](https://github.com/MaJerle/lwprintf)。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/jiang-lai-ye-xu-neng-yong-dao-de-kai-yuan-ku.html</guid><pubDate>Thu, 03 Apr 2025 03:12:49 +0000</pubDate></item><item><title>简历</title><link>https://tangrenbin.github.io/post/jian-li.html</link><description># 个人信息
+- [lwprintf](https://github.com/MaJerle/lwprintf)
+
+# 压缩算法
+- [heatshrink](https://github.com/atomicobject/heatshrink)
+可以用于升级压缩。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/jiang-lai-ye-xu-neng-yong-dao-de-kai-yuan-ku.html</guid><pubDate>Thu, 03 Apr 2025 03:12:49 +0000</pubDate></item><item><title>简历</title><link>https://tangrenbin.github.io/post/jian-li.html</link><description># 个人信息
 - 姓名：唐任斌
 - 学历：本科
 - 手机（微信）：18894242252
