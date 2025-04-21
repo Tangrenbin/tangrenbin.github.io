@@ -28,13 +28,12 @@ C:\Users\Administrator\AppData\Roaming\Cursor\User
     "editor.tabSize": 4, // Tab等于4个空格
     "editor.renderWhitespace": "all", // 显示所有空白字符
     "editor.wordWrap": "on", // 启用自动换行
-    "editor.lineNumbers": "relative", // 使用相对行号
     "editor.minimap.enabled": false, // 禁用代码缩略图
-    "editor.fontFamily": "'JetBrains Mono', 'Source Code Pro', Consolas, monospace", // 设置编辑器字体
+    // "editor.fontFamily": "'JetBrains Mono', 'Source Code Pro', Consolas, monospace", // 设置编辑器字体
     "editor.fontLigatures": true, // 启用字体连字
     "editor.suggestSelection": "first", // 自动选择第一个建议
-    "editor.formatOnSave": true, // 保存时格式化
-    "editor.formatOnPaste": true, // 粘贴时格式化
+    "editor.formatOnSave": false, // 保存时格式化
+    "editor.formatOnPaste": false, // 粘贴时格式化
     "editor.mouseWheelZoom": true, // 允许通过Ctrl+滚轮缩放
     // 工作台设置
     "workbench.activityBar.orientation": "vertical", // 活动栏垂直排列
