@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的知识库</title><link>https://tangrenbin.github.io</link><description>生活或者工作中遇到的一些知识点的积累</description><copyright>唐任斌的知识库</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Mon, 21 Apr 2025 09:13:35 +0000</lastBuildDate><managingEditor>唐任斌的知识库</managingEditor><ttl>60</ttl><webMaster>唐任斌的知识库</webMaster><item><title>Cursor和VS Code设置</title><link>https://tangrenbin.github.io/post/Cursor-he-VS%20Code-she-zhi.html</link><description># 设置文件路径
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的知识库</title><link>https://tangrenbin.github.io</link><description>生活或者工作中遇到的一些知识点的积累</description><copyright>唐任斌的知识库</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Mon, 21 Apr 2025 09:15:48 +0000</lastBuildDate><managingEditor>唐任斌的知识库</managingEditor><ttl>60</ttl><webMaster>唐任斌的知识库</webMaster><item><title>Cursor和VS Code设置</title><link>https://tangrenbin.github.io/post/Cursor-he-VS%20Code-she-zhi.html</link><description># 设置文件路径
 ```TXT
 C:\Users\Administrator\AppData\Roaming\Cursor\User
 ```
@@ -625,9 +625,10 @@ void duff_device(char *to, char *from, int count)&#13;
 }&#13;
 ```&#13;
 &#13;
-[这篇博客有详细解释](https://www.cnblogs.com/yffq/p/4558696.html)。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/da-fu-she-bei.html</guid><pubDate>Thu, 11 Jul 2024 03:47:01 +0000</pubDate></item><item><title> 取消全部打印并不编译</title><link>https://tangrenbin.github.io/post/%20-qu-xiao-quan-bu-da-yin-bing-bu-bian-yi.html</link><description>```C&#13;
-#define app_printf(fmt, arg...)   ({ (void)0; }) //适用于更复杂的语法，例如三元运算符&#13;
-#define app_printf(...)&#13;
+[这篇博客有详细解释](https://www.cnblogs.com/yffq/p/4558696.html)。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/da-fu-she-bei.html</guid><pubDate>Thu, 11 Jul 2024 03:47:01 +0000</pubDate></item><item><title> 取消全部打印并不编译</title><link>https://tangrenbin.github.io/post/%20-qu-xiao-quan-bu-da-yin-bing-bu-bian-yi.html</link><description>```C
+#define app_printf(fmt, arg...)   ({ (void)0; }) //适用于更复杂的语法，例如三元运算符
+#define app_printf(...)
+#define printf_s(...)      do {} while(0)
 ```。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/%20-qu-xiao-quan-bu-da-yin-bing-bu-bian-yi.html</guid><pubDate>Thu, 11 Jul 2024 02:42:33 +0000</pubDate></item><item><title>GCC 取消定义但未使用变量警告</title><link>https://tangrenbin.github.io/post/GCC%20-qu-xiao-ding-yi-dan-wei-shi-yong-bian-liang-jing-gao.html</link><description>```GCC&#13;
 -Wno-unused-variable -Wno-unused-but-set-variable&#13;
 ```。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/GCC%20-qu-xiao-ding-yi-dan-wei-shi-yong-bian-liang-jing-gao.html</guid><pubDate>Thu, 11 Jul 2024 02:17:16 +0000</pubDate></item></channel></rss>

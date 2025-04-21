@@ -13,11 +13,13 @@
 <meta name="description" content="```C
 #define app_printf(fmt, arg...)   ({ (void)0; }) //适用于更复杂的语法，例如三元运算符
 #define app_printf(...)
+#define printf_s(...)      do {} while(0)
 ```。">
 <meta property="og:title" content=" 取消全部打印并不编译">
 <meta property="og:description" content="```C
 #define app_printf(fmt, arg...)   ({ (void)0; }) //适用于更复杂的语法，例如三元运算符
 #define app_printf(...)
+#define printf_s(...)      do {} while(0)
 ```。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://tangrenbin.github.io/post/%20-qu-xiao-quan-bu-da-yin-bing-bu-bian-yi.html">
@@ -90,7 +92,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
     <div id="content">
 <div class="markdown-body" id="postBody"><div class="highlight highlight-source-c"><pre class="notranslate"><span class="pl-k">#define</span> <span class="pl-en">app_printf</span>(<span class="pl-s1">fmt</span>, <span class="pl-s1">arg</span>...)   ({ (void)0; }) //适用于更复杂的语法，例如三元运算符
-<span class="pl-k">#define</span> <span class="pl-en">app_printf</span>(...)</pre></div></div>
+<span class="pl-k">#define</span> <span class="pl-en">app_printf</span>(...)
+<span class="pl-k">#define</span> <span class="pl-en">printf_s</span>(...)      do {} while(0)</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
