@@ -189,8 +189,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <ol>
 <li>新建一个安全组，开启所有流量的出站和入站，特别是要添加一个  ICMP - IPv4</li>
 </ol>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4a33d013-d1d2-4bba-b907-184f42b9d7fc"><img src="https://github.com/user-attachments/assets/4a33d013-d1d2-4bba-b907-184f42b9d7fc" alt="image" style="max-width: 100%; height: auto;"></a></p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/5aa110cc-88b0-4df7-b0ad-a89ff139aced"><img src="https://github.com/user-attachments/assets/5aa110cc-88b0-4df7-b0ad-a89ff139aced" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/4a33d013-d1d2-4bba-b907-184f42b9d7fc"><img src="https://github.com/user-attachments/assets/4a33d013-d1d2-4bba-b907-184f42b9d7fc" alt="image" style="max-width: 100%;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/5aa110cc-88b0-4df7-b0ad-a89ff139aced"><img src="https://github.com/user-attachments/assets/5aa110cc-88b0-4df7-b0ad-a89ff139aced" alt="image" style="max-width: 100%;"></a></p>
 <ol start="2">
 <li>先申请一个弹性ip然后绑定到实例，然后释放这个ip，达到刷新的目的</li>
 </ol>
@@ -217,7 +217,7 @@ sshd -T <span class="pl-k">|</span> grep passwordauthentication</pre></div>
 <li>如果 passwordauthentication 还是 no , 那就说明还有其他的地方把这个参数配置成了 no ,通过这个命名把那个文件找出来，并且进去这个目录把这个参数改成 yes</li>
 </ol>
 <div class="highlight highlight-source-shell"><pre class="notranslate">grep -i include /etc/ssh/sshd_config</pre></div>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/8d5d6e0a-2e78-49cc-aa7d-ab3c889e6d28"><img src="https://github.com/user-attachments/assets/8d5d6e0a-2e78-49cc-aa7d-ab3c889e6d28" alt="image" style="max-width: 100%; height: auto;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/8d5d6e0a-2e78-49cc-aa7d-ab3c889e6d28"><img src="https://github.com/user-attachments/assets/8d5d6e0a-2e78-49cc-aa7d-ab3c889e6d28" alt="image" style="max-width: 100%;"></a></p>
 <ol start="7">
 <li>重启 SSH 服务来应用更改</li>
 </ol>
@@ -226,7 +226,7 @@ sshd -T <span class="pl-k">|</span> grep passwordauthentication</pre></div>
 <li>再次验证配置是否正确</li>
 </ol>
 <div class="highlight highlight-source-shell"><pre class="notranslate">sshd -T <span class="pl-k">|</span> grep passwordauthentication</pre></div>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/5459b805-d926-42f8-a8ba-1d5892aa24a6"><img src="https://github.com/user-attachments/assets/5459b805-d926-42f8-a8ba-1d5892aa24a6" alt="image" style="max-width: 100%; height: auto;"></a></p></div>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/5459b805-d926-42f8-a8ba-1d5892aa24a6"><img src="https://github.com/user-attachments/assets/5459b805-d926-42f8-a8ba-1d5892aa24a6" alt="image" style="max-width: 100%;"></a></p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
