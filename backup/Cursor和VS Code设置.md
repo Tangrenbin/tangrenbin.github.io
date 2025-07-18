@@ -109,6 +109,10 @@ C:\Users\Administrator\AppData\Roaming\Cursor\User
     "ai.completions.enabled": true, // 启用AI代码补全
     "ai.completions.proxy.enabled": false, // 禁用AI代理
     // WSL增强
-    "remote.WSL.fileWatcher.polling": true // 使用轮询方式监视WSL文件变化
+    "remote.WSL.fileWatcher.polling": true, // 使用轮询方式监视WSL文件变化
+    "http.proxy": "socks5://127.0.0.1:10808",//应对cursor无法选择claud-4模型
+    "http.proxyStrictSSL": false,
+    "http.proxySupport": "on"
+
 }
 ```

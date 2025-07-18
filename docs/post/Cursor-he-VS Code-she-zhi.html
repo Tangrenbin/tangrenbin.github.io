@@ -121,7 +121,11 @@ C:\Users\Administrator\AppData\Roaming\Cursor\User
     'ai.completions.enabled': true, // 启用AI代码补全
     'ai.completions.proxy.enabled': false, // 禁用AI代理
     // WSL增强
-    'remote.WSL.fileWatcher.polling': true // 使用轮询方式监视WSL文件变化
+    'remote.WSL.fileWatcher.polling': true, // 使用轮询方式监视WSL文件变化
+    'http.proxy': 'socks5://127.0.0.1:10808',//应对cursor无法选择claud-4模型
+    'http.proxyStrictSSL': false,
+    'http.proxySupport': 'on'
+
 }
 ```
 。">
@@ -237,7 +241,11 @@ C:\Users\Administrator\AppData\Roaming\Cursor\User
     'ai.completions.enabled': true, // 启用AI代码补全
     'ai.completions.proxy.enabled': false, // 禁用AI代理
     // WSL增强
-    'remote.WSL.fileWatcher.polling': true // 使用轮询方式监视WSL文件变化
+    'remote.WSL.fileWatcher.polling': true, // 使用轮询方式监视WSL文件变化
+    'http.proxy': 'socks5://127.0.0.1:10808',//应对cursor无法选择claud-4模型
+    'http.proxyStrictSSL': false,
+    'http.proxySupport': 'on'
+
 }
 ```
 。">
@@ -418,7 +426,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-ent">"ai.completions.enabled"</span>: <span class="pl-c1">true</span>, <span class="pl-ii">// 启用AI代码补全</span>
     <span class="pl-ent">"ai.completions.proxy.enabled"</span>: <span class="pl-c1">false</span>, <span class="pl-ii">// 禁用AI代理</span>
     <span class="pl-ii">// WSL增强</span>
-    <span class="pl-ent">"remote.WSL.fileWatcher.polling"</span>: <span class="pl-c1">true</span> <span class="pl-ii">// 使用轮询方式监视WSL文件变化</span>
+    <span class="pl-ent">"remote.WSL.fileWatcher.polling"</span>: <span class="pl-c1">true</span>, <span class="pl-ii">// 使用轮询方式监视WSL文件变化</span>
+    <span class="pl-ent">"http.proxy"</span>: <span class="pl-s"><span class="pl-pds">"</span>socks5://127.0.0.1:10808<span class="pl-pds">"</span></span>,<span class="pl-ii">//应对cursor无法选择claud-4模型</span>
+    <span class="pl-ent">"http.proxyStrictSSL"</span>: <span class="pl-c1">false</span>,
+    <span class="pl-ent">"http.proxySupport"</span>: <span class="pl-s"><span class="pl-pds">"</span>on<span class="pl-pds">"</span></span>
+
 }</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
