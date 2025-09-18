@@ -6,7 +6,7 @@
     {
       "name": "gemini",
       "api_base_url": "https://generativelanguage.googleapis.com/v1beta/models/",
-      "api_key": "AIzaSyDOLKXvMTqw0EgLHVOA13fgBZHbS8NEvBs",
+      "api_key": "AIzaSyDso7OjJGXnBh_XKoT90sCIll8uqW22iGw",
       "models": [
         "gemini-2.5-flash",
         "gemini-2.5-pro"
