@@ -16,10 +16,20 @@
 
 # Tunable parameters (override via env if needed)
 LAN_DEV='${LAN_DEV:-br-lan}'
-LAN_IP='${LAN_IP:-172.17.0.207}'
+LAN_IP='${LAN_IP:-172.17.0.211}'
 LAN_MASK='${LAN_MASK:-255.255.255.0}'
-LAN_GW='${LAN_GW:-172.17.0.1}'
-LAN_DNS='${LAN_DNS:-61.134.1.4}'
+LAN_GW='${LAN_GW:-172.17.0.209}'
+LAN_DNS='${LAN_DNS:-172.17.0.209}'
+
+stop_and_disable_if_exists() {
+    local svc='$1'
+    if [ -x '/etc/init.d/${svc}' ]; then
+        /etc/init.d/${svc} stop >/dev/null 2>&1 || true
+        /etc/init.d/${svc} disable >/dev/null 2>&1 || true
+    else
+        echo 'Service ${svc} not installed, skipping.'
+    fi
+}
 
 echo '=========================================='
 echo 'Start bypass-router setup (LAN: ${LAN_IP})'
@@ -48,14 +58,35 @@ uci delete dhcp.lan.ndp 2>/dev/null
 uci commit dhcp
 
 echo '[4/5] Adjust firewall (LAN ACCEPT; do not open WAN)...'
-uci set firewall.lan.input='ACCEPT'
-uci set firewall.lan.output='ACCEPT'
-uci set firewall.lan.forward='ACCEPT'
+# 找到或创建 LAN 区域（默认 firewall 匿名区块时不能直接用 firewall.lan）
+LAN_ZONE=''
+if uci -q get firewall.lan >/dev/null; then
+    LAN_ZONE='lan'
+else
+    i=0
+    while uci -q get firewall.@zone[$i] >/dev/null; do
+        if [ '$(uci -q get firewall.@zone[$i].name)' = 'lan' ]; then
+            LAN_ZONE='@zone[$i]'
+            break
+        fi
+        i=$((i + 1))
+    done
+fi
+
+if [ -z '${LAN_ZONE}' ]; then
+    echo 'LAN firewall zone not found, creating one...'
+    LAN_ZONE='$(uci add firewall zone)'
+    uci set firewall.${LAN_ZONE}.name='lan'
+    uci add_list firewall.${LAN_ZONE}.network='lan'
+fi
+
+uci set firewall.${LAN_ZONE}.input='ACCEPT'
+uci set firewall.${LAN_ZONE}.output='ACCEPT'
+uci set firewall.${LAN_ZONE}.forward='ACCEPT'
 uci commit firewall
 
 echo '[5/5] Stop IPv6 related services...'
-/etc/init.d/odhcpd stop
-/etc/init.d/odhcpd disable
+stop_and_disable_if_exists 'odhcpd'
 
 echo 'Restarting network services...'
 /etc/init.d/network restart
@@ -89,10 +120,20 @@ echo '=========================================='
 
 # Tunable parameters (override via env if needed)
 LAN_DEV='${LAN_DEV:-br-lan}'
-LAN_IP='${LAN_IP:-172.17.0.207}'
+LAN_IP='${LAN_IP:-172.17.0.211}'
 LAN_MASK='${LAN_MASK:-255.255.255.0}'
-LAN_GW='${LAN_GW:-172.17.0.1}'
-LAN_DNS='${LAN_DNS:-61.134.1.4}'
+LAN_GW='${LAN_GW:-172.17.0.209}'
+LAN_DNS='${LAN_DNS:-172.17.0.209}'
+
+stop_and_disable_if_exists() {
+    local svc='$1'
+    if [ -x '/etc/init.d/${svc}' ]; then
+        /etc/init.d/${svc} stop >/dev/null 2>&1 || true
+        /etc/init.d/${svc} disable >/dev/null 2>&1 || true
+    else
+        echo 'Service ${svc} not installed, skipping.'
+    fi
+}
 
 echo '=========================================='
 echo 'Start bypass-router setup (LAN: ${LAN_IP})'
@@ -121,14 +162,35 @@ uci delete dhcp.lan.ndp 2>/dev/null
 uci commit dhcp
 
 echo '[4/5] Adjust firewall (LAN ACCEPT; do not open WAN)...'
-uci set firewall.lan.input='ACCEPT'
-uci set firewall.lan.output='ACCEPT'
-uci set firewall.lan.forward='ACCEPT'
+# 找到或创建 LAN 区域（默认 firewall 匿名区块时不能直接用 firewall.lan）
+LAN_ZONE=''
+if uci -q get firewall.lan >/dev/null; then
+    LAN_ZONE='lan'
+else
+    i=0
+    while uci -q get firewall.@zone[$i] >/dev/null; do
+        if [ '$(uci -q get firewall.@zone[$i].name)' = 'lan' ]; then
+            LAN_ZONE='@zone[$i]'
+            break
+        fi
+        i=$((i + 1))
+    done
+fi
+
+if [ -z '${LAN_ZONE}' ]; then
+    echo 'LAN firewall zone not found, creating one...'
+    LAN_ZONE='$(uci add firewall zone)'
+    uci set firewall.${LAN_ZONE}.name='lan'
+    uci add_list firewall.${LAN_ZONE}.network='lan'
+fi
+
+uci set firewall.${LAN_ZONE}.input='ACCEPT'
+uci set firewall.${LAN_ZONE}.output='ACCEPT'
+uci set firewall.${LAN_ZONE}.forward='ACCEPT'
 uci commit firewall
 
 echo '[5/5] Stop IPv6 related services...'
-/etc/init.d/odhcpd stop
-/etc/init.d/odhcpd disable
+stop_and_disable_if_exists 'odhcpd'
 
 echo 'Restarting network services...'
 /etc/init.d/network restart
@@ -230,10 +292,20 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <span class="pl-c"><span class="pl-c">#</span> Tunable parameters (override via env if needed)</span>
 LAN_DEV=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${LAN_DEV<span class="pl-k">:-</span>br-lan}</span><span class="pl-pds">"</span></span>
-LAN_IP=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${LAN_IP<span class="pl-k">:-</span>172.17.0.207}</span><span class="pl-pds">"</span></span>
+LAN_IP=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${LAN_IP<span class="pl-k">:-</span>172.17.0.211}</span><span class="pl-pds">"</span></span>
 LAN_MASK=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${LAN_MASK<span class="pl-k">:-</span>255.255.255.0}</span><span class="pl-pds">"</span></span>
-LAN_GW=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${LAN_GW<span class="pl-k">:-</span>172.17.0.1}</span><span class="pl-pds">"</span></span>
-LAN_DNS=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${LAN_DNS<span class="pl-k">:-</span>61.134.1.4}</span><span class="pl-pds">"</span></span>
+LAN_GW=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${LAN_GW<span class="pl-k">:-</span>172.17.0.209}</span><span class="pl-pds">"</span></span>
+LAN_DNS=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${LAN_DNS<span class="pl-k">:-</span>172.17.0.209}</span><span class="pl-pds">"</span></span>
+
+<span class="pl-en">stop_and_disable_if_exists</span>() {
+    <span class="pl-k">local</span> svc=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$1</span><span class="pl-pds">"</span></span>
+    <span class="pl-k">if</span> [ <span class="pl-k">-x</span> <span class="pl-s"><span class="pl-pds">"</span>/etc/init.d/<span class="pl-smi">${svc}</span><span class="pl-pds">"</span></span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        /etc/init.d/<span class="pl-smi">${svc}</span> stop <span class="pl-k">&gt;</span>/dev/null <span class="pl-k">2&gt;&amp;1</span> <span class="pl-k">||</span> <span class="pl-c1">true</span>
+        /etc/init.d/<span class="pl-smi">${svc}</span> disable <span class="pl-k">&gt;</span>/dev/null <span class="pl-k">2&gt;&amp;1</span> <span class="pl-k">||</span> <span class="pl-c1">true</span>
+    <span class="pl-k">else</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>Service <span class="pl-smi">${svc}</span> not installed, skipping.<span class="pl-pds">"</span></span>
+    <span class="pl-k">fi</span>
+}
 
 <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>==========================================<span class="pl-pds">"</span></span>
 <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>Start bypass-router setup (LAN: <span class="pl-smi">${LAN_IP}</span>)<span class="pl-pds">"</span></span>
@@ -262,14 +334,35 @@ uci delete dhcp.lan.ndp <span class="pl-k">2&gt;</span>/dev/null
 uci commit dhcp
 
 <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>[4/5] Adjust firewall (LAN ACCEPT; do not open WAN)...<span class="pl-pds">"</span></span>
-uci <span class="pl-c1">set</span> firewall.lan.input=<span class="pl-s"><span class="pl-pds">'</span>ACCEPT<span class="pl-pds">'</span></span>
-uci <span class="pl-c1">set</span> firewall.lan.output=<span class="pl-s"><span class="pl-pds">'</span>ACCEPT<span class="pl-pds">'</span></span>
-uci <span class="pl-c1">set</span> firewall.lan.forward=<span class="pl-s"><span class="pl-pds">'</span>ACCEPT<span class="pl-pds">'</span></span>
+<span class="pl-c"><span class="pl-c">#</span> 找到或创建 LAN 区域（默认 firewall 匿名区块时不能直接用 firewall.lan）</span>
+LAN_ZONE=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+<span class="pl-k">if</span> uci -q get firewall.lan <span class="pl-k">&gt;</span>/dev/null<span class="pl-k">;</span> <span class="pl-k">then</span>
+    LAN_ZONE=<span class="pl-s"><span class="pl-pds">"</span>lan<span class="pl-pds">"</span></span>
+<span class="pl-k">else</span>
+    i=0
+    <span class="pl-k">while</span> uci -q get firewall.@zone[<span class="pl-smi">$i</span>] <span class="pl-k">&gt;</span>/dev/null<span class="pl-k">;</span> <span class="pl-k">do</span>
+        <span class="pl-k">if</span> [ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>uci -q get firewall.@zone[<span class="pl-smi">$i</span>].name<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>lan<span class="pl-pds">"</span></span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+            LAN_ZONE=<span class="pl-s"><span class="pl-pds">"</span>@zone[<span class="pl-smi">$i</span>]<span class="pl-pds">"</span></span>
+            <span class="pl-c1">break</span>
+        <span class="pl-k">fi</span>
+        i=<span class="pl-s"><span class="pl-pds">$((</span>i <span class="pl-k">+</span> <span class="pl-c1">1</span><span class="pl-pds">))</span></span>
+    <span class="pl-k">done</span>
+<span class="pl-k">fi</span>
+
+<span class="pl-k">if</span> [ <span class="pl-k">-z</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${LAN_ZONE}</span><span class="pl-pds">"</span></span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>LAN firewall zone not found, creating one...<span class="pl-pds">"</span></span>
+    LAN_ZONE=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>uci add firewall zone<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span>
+    uci <span class="pl-c1">set</span> firewall.<span class="pl-smi">${LAN_ZONE}</span>.name=<span class="pl-s"><span class="pl-pds">'</span>lan<span class="pl-pds">'</span></span>
+    uci add_list firewall.<span class="pl-smi">${LAN_ZONE}</span>.network=<span class="pl-s"><span class="pl-pds">'</span>lan<span class="pl-pds">'</span></span>
+<span class="pl-k">fi</span>
+
+uci <span class="pl-c1">set</span> firewall.<span class="pl-smi">${LAN_ZONE}</span>.input=<span class="pl-s"><span class="pl-pds">'</span>ACCEPT<span class="pl-pds">'</span></span>
+uci <span class="pl-c1">set</span> firewall.<span class="pl-smi">${LAN_ZONE}</span>.output=<span class="pl-s"><span class="pl-pds">'</span>ACCEPT<span class="pl-pds">'</span></span>
+uci <span class="pl-c1">set</span> firewall.<span class="pl-smi">${LAN_ZONE}</span>.forward=<span class="pl-s"><span class="pl-pds">'</span>ACCEPT<span class="pl-pds">'</span></span>
 uci commit firewall
 
 <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>[5/5] Stop IPv6 related services...<span class="pl-pds">"</span></span>
-/etc/init.d/odhcpd stop
-/etc/init.d/odhcpd disable
+stop_and_disable_if_exists <span class="pl-s"><span class="pl-pds">"</span>odhcpd<span class="pl-pds">"</span></span>
 
 <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>Restarting network services...<span class="pl-pds">"</span></span>
 /etc/init.d/network restart

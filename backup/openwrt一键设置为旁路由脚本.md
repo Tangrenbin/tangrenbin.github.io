@@ -4,10 +4,20 @@
 
 # Tunable parameters (override via env if needed)
 LAN_DEV="${LAN_DEV:-br-lan}"
-LAN_IP="${LAN_IP:-172.17.0.207}"
+LAN_IP="${LAN_IP:-172.17.0.211}"
 LAN_MASK="${LAN_MASK:-255.255.255.0}"
-LAN_GW="${LAN_GW:-172.17.0.1}"
-LAN_DNS="${LAN_DNS:-61.134.1.4}"
+LAN_GW="${LAN_GW:-172.17.0.209}"
+LAN_DNS="${LAN_DNS:-172.17.0.209}"
+
+stop_and_disable_if_exists() {
+    local svc="$1"
+    if [ -x "/etc/init.d/${svc}" ]; then
+        /etc/init.d/${svc} stop >/dev/null 2>&1 || true
+        /etc/init.d/${svc} disable >/dev/null 2>&1 || true
+    else
+        echo "Service ${svc} not installed, skipping."
+    fi
+}
 
 echo "=========================================="
 echo "Start bypass-router setup (LAN: ${LAN_IP})"
@@ -36,14 +46,35 @@ uci delete dhcp.lan.ndp 2>/dev/null
 uci commit dhcp
 
 echo "[4/5] Adjust firewall (LAN ACCEPT; do not open WAN)..."
-uci set firewall.lan.input='ACCEPT'
-uci set firewall.lan.output='ACCEPT'
-uci set firewall.lan.forward='ACCEPT'
+# 找到或创建 LAN 区域（默认 firewall 匿名区块时不能直接用 firewall.lan）
+LAN_ZONE=""
+if uci -q get firewall.lan >/dev/null; then
+    LAN_ZONE="lan"
+else
+    i=0
+    while uci -q get firewall.@zone[$i] >/dev/null; do
+        if [ "$(uci -q get firewall.@zone[$i].name)" = "lan" ]; then
+            LAN_ZONE="@zone[$i]"
+            break
+        fi
+        i=$((i + 1))
+    done
+fi
+
+if [ -z "${LAN_ZONE}" ]; then
+    echo "LAN firewall zone not found, creating one..."
+    LAN_ZONE="$(uci add firewall zone)"
+    uci set firewall.${LAN_ZONE}.name='lan'
+    uci add_list firewall.${LAN_ZONE}.network='lan'
+fi
+
+uci set firewall.${LAN_ZONE}.input='ACCEPT'
+uci set firewall.${LAN_ZONE}.output='ACCEPT'
+uci set firewall.${LAN_ZONE}.forward='ACCEPT'
 uci commit firewall
 
 echo "[5/5] Stop IPv6 related services..."
-/etc/init.d/odhcpd stop
-/etc/init.d/odhcpd disable
+stop_and_disable_if_exists "odhcpd"
 
 echo "Restarting network services..."
 /etc/init.d/network restart
