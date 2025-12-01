@@ -1,5 +1,38 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Mon, 01 Dec 2025 04:13:47 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>OpenWRT设置为中文</title><link>https://tangrenbin.github.io/post/OpenWRT-she-zhi-wei-zhong-wen.html</link><description>```shell
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Mon, 01 Dec 2025 04:14:50 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>OpenWRT安装openclash</title><link>https://tangrenbin.github.io/post/OpenWRT-an-zhuang-openclash.html</link><description>```shell
+#!/bin/bash
+
+# OpenClash 安装脚本
+# 注意：执行前请将 luci-app-openclash_*.ipk 文件放在当前目录
+
+# 移除标准版 dnsmasq（避免与 dnsmasq-full 冲突）
+echo '正在移除标准版 dnsmasq...'
+opkg remove dnsmasq
+
+# 更新软件包列表
+opkg update
+
+# 方案1: iptables（推荐用于较旧的内核）
+echo '开始安装 OpenClash 依赖（iptables 方案）...'
+opkg install bash iptables dnsmasq-full curl ca-bundle ipset ip-full \
+  iptables-mod-tproxy iptables-mod-extra ruby ruby-yaml \
+  kmod-tun kmod-inet-diag unzip luci-compat luci luci-base
+
+# 下载
+wget -O luci-app-openclash_0.47.028_all.ipk https://github.com/vernesong/OpenClash/releases/download/v0.47.028/luci-app-openclash_0.47.028_all.ipk
+
+# 安装 OpenClash
+echo '安装 OpenClash...'
+opkg install ./luci-app-openclash_0.47.028_all.ipk
+
+echo '安装完成！'
+
+# 如果你的系统使用 nftables（OpenWrt 22.03+），请注释掉上面的 iptables 方案，改用下面的：
+# echo '开始安装 OpenClash 依赖（nftables 方案）...'
+# opkg install bash dnsmasq-full curl ca-bundle ip-full ruby ruby-yaml \
+#   kmod-tun kmod-inet-diag unzip kmod-nft-tproxy luci-compat luci luci-base
+# opkg install ./luci-app-openclash_*.ipk
+```。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/OpenWRT-an-zhuang-openclash.html</guid><pubDate>Mon, 01 Dec 2025 04:14:25 +0000</pubDate></item><item><title>OpenWRT设置为中文</title><link>https://tangrenbin.github.io/post/OpenWRT-she-zhi-wei-zhong-wen.html</link><description>```shell
 #!/bin/bash
 
 echo 'Installing Chinese language pack...'
