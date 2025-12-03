@@ -1,5 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Mon, 01 Dec 2025 04:14:50 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>OpenWRT安装openclash</title><link>https://tangrenbin.github.io/post/OpenWRT-an-zhuang-openclash.html</link><description>```shell
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Wed, 03 Dec 2025 09:49:47 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>优先级反转</title><link>https://tangrenbin.github.io/post/you-xian-ji-fan-zhuan.html</link><description># 优先级反转问题说明
+
+## 1. 概述
+优先级反转（Priority Inversion）指在抢占式调度系统中，高优先级任务被间接阻塞而让低优先级任务先执行。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/you-xian-ji-fan-zhuan.html</guid><pubDate>Wed, 03 Dec 2025 09:49:17 +0000</pubDate></item><item><title>OpenWRT安装openclash</title><link>https://tangrenbin.github.io/post/OpenWRT-an-zhuang-openclash.html</link><description>```shell
 #!/bin/bash
 
 # OpenClash 安装脚本
