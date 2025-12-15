@@ -1,5 +1,22 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Wed, 03 Dec 2025 09:49:47 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>优先级反转</title><link>https://tangrenbin.github.io/post/you-xian-ji-fan-zhuan.html</link><description># 优先级反转问题说明
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Mon, 15 Dec 2025 03:22:48 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>设置SSH公钥认证cmd脚本</title><link>https://tangrenbin.github.io/post/she-zhi-SSH-gong-yao-ren-zheng-cmd-jiao-ben.html</link><description>```bat
+@echo off
+setlocal EnableExtensions EnableDelayedExpansion
+
+:: 让中文提示正常显示（UTF-8）；脚本结束时会恢复原代码页
+for /f 'tokens=2 delims=:' %%A in ('chcp') do set 'origChcp=%%A'
+set 'origChcp=!origChcp: =!'
+chcp 65001 &gt;nul
+
+pushd '%~dp0' &gt;nul 2&gt;&amp;1
+
+:: 更改文本颜色为亮绿色
+color 0A
+title 配置无密码 SSH 连接
+
+:: 依赖检查（Windows OpenSSH）
+where ssh &gt;nul 2&gt;&amp;1 || (
+  echo [ERROR] 未找到 ssh。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/she-zhi-SSH-gong-yao-ren-zheng-cmd-jiao-ben.html</guid><pubDate>Mon, 15 Dec 2025 03:22:18 +0000</pubDate></item><item><title>优先级反转</title><link>https://tangrenbin.github.io/post/you-xian-ji-fan-zhuan.html</link><description># 优先级反转问题说明
 
 ## 1. 概述
 优先级反转（Priority Inversion）指在抢占式调度系统中，高优先级任务被间接阻塞而让低优先级任务先执行。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/you-xian-ji-fan-zhuan.html</guid><pubDate>Wed, 03 Dec 2025 09:49:17 +0000</pubDate></item><item><title>OpenWRT安装openclash</title><link>https://tangrenbin.github.io/post/OpenWRT-an-zhuang-openclash.html</link><description>```shell
