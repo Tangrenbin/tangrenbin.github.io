@@ -25,7 +25,7 @@ MCU（微控制器单元）的编译过程通常包括：预处理、编译、�
 <meta property="og:url" content="https://tangrenbin.github.io/post/MCU-bian-yi-chan-wu-BIN-wen-jian-duan-jie-gou-jie-xi.html">
 <meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
 <title>MCU编译产物BIN文件段结构解析</title>
-
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
 </head>
@@ -113,18 +113,16 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>程序运行期间不会改变</li>
 </ul>
 <p><strong>示例代码对应</strong>：</p>
-<pre lang="c" class="notranslate"><code class="notranslate">int add(int a, int b) {
-    return a + b;  // 这段代码会被编译成机器码存放在.text段
-}
-</code></pre>
+<div class="highlight highlight-source-c"><pre class="notranslate"><span class="pl-smi">int</span> <span class="pl-en">add</span>(<span class="pl-smi">int</span> <span class="pl-s1">a</span>, <span class="pl-smi">int</span> <span class="pl-s1">b</span>) {
+    <span class="pl-k">return</span> <span class="pl-s1">a</span> <span class="pl-c1">+</span> <span class="pl-s1">b</span>;  <span class="pl-c">// 这段代码会被编译成机器码存放在.text段</span>
+}</pre></div>
 <p><strong>在链接脚本中的定义</strong>：</p>
-<pre lang="ld" class="notranslate"><code class="notranslate">.text :
+<div class="highlight highlight-source-c-linker"><pre class="notranslate"><span class="pl-c1">.text</span> :
 {
-    *(.text)        /* 所有目标文件的.text段 */
-    *(.text.*)      /* 子段 */
-    . = ALIGN(4);   /* 4字节对齐 */
-} &gt;FLASH            /* 存放在Flash中 */
-</code></pre>
+    *(.<span class="pl-smi">text</span>)        <span class="pl-c"><span class="pl-c">/*</span> 所有目标文件的.text段 <span class="pl-c">*/</span></span>
+    *(.<span class="pl-smi">text</span>.*)      <span class="pl-c"><span class="pl-c">/*</span> 子段 <span class="pl-c">*/</span></span>
+    . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);   <span class="pl-c"><span class="pl-c">/*</span> 4字节对齐 <span class="pl-c">*/</span></span>
+} &gt;FLASH            <span class="pl-c"><span class="pl-c">/*</span> 存放在Flash中 <span class="pl-c">*/</span></span></pre></div>
 <h3>3.2 .rodata 段（只读数据段）</h3>
 <p><strong>作用</strong>：存放只读数据，如字符串常量、全局const变量</p>
 <p><strong>特点</strong>：</p>
@@ -134,17 +132,15 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>程序运行期间不会改变</li>
 </ul>
 <p><strong>示例代码对应</strong>：</p>
-<pre lang="c" class="notranslate"><code class="notranslate">const char* message = "Hello World";  // 字符串常量存放在.rodata段
-const int table[] = {1, 2, 3, 4};     // const数组存放在.rodata段
-</code></pre>
+<div class="highlight highlight-source-c"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-smi">char</span><span class="pl-c1">*</span> <span class="pl-s1">message</span> <span class="pl-c1">=</span> <span class="pl-s">"Hello World"</span>;  <span class="pl-c">// 字符串常量存放在.rodata段</span>
+<span class="pl-k">const</span> <span class="pl-smi">int</span> <span class="pl-s1">table</span>[] <span class="pl-c1">=</span> {<span class="pl-c1">1</span>, <span class="pl-c1">2</span>, <span class="pl-c1">3</span>, <span class="pl-c1">4</span>};     <span class="pl-c">// const数组存放在.rodata段</span></pre></div>
 <p><strong>在链接脚本中的定义</strong>：</p>
-<pre lang="ld" class="notranslate"><code class="notranslate">.text :
+<div class="highlight highlight-source-c-linker"><pre class="notranslate"><span class="pl-c1">.text</span> :
 {
-    *(.text)
-    *(.rodata)      /* 只读数据通常与代码段一起存放 */
-    *(.rodata*)
-} &gt;FLASH
-</code></pre>
+    *(.<span class="pl-smi">text</span>)
+    *(.<span class="pl-smi">rodata</span>)      <span class="pl-c"><span class="pl-c">/*</span> 只读数据通常与代码段一起存放 <span class="pl-c">*/</span></span>
+    *(.<span class="pl-smi">rodata</span>*)
+} &gt;FLASH</pre></div>
 <h3>3.3 .data 段（已初始化数据段）</h3>
 <p><strong>作用</strong>：存放已初始化的全局变量和静态变量</p>
 <p><strong>特点</strong>：</p>
@@ -154,34 +150,31 @@ const int table[] = {1, 2, 3, 4};     // const数组存放在.rodata段
 <li>启动时需要从Flash复制到RAM（由启动代码完成）</li>
 </ul>
 <p><strong>示例代码对应</strong>：</p>
-<pre lang="c" class="notranslate"><code class="notranslate">int global_var = 100;           // 存放在.data段
-static int static_var = 200;     // 存放在.data段
-</code></pre>
+<div class="highlight highlight-source-c"><pre class="notranslate"><span class="pl-smi">int</span> <span class="pl-s1">global_var</span> <span class="pl-c1">=</span> <span class="pl-c1">100</span>;           <span class="pl-c">// 存放在.data段</span>
+<span class="pl-k">static</span> <span class="pl-smi">int</span> <span class="pl-s1">static_var</span> <span class="pl-c1">=</span> <span class="pl-c1">200</span>;     <span class="pl-c">// 存放在.data段</span></pre></div>
 <p><strong>内存布局说明</strong>：</p>
 <ul>
 <li><strong>LMA（Load Memory Address）</strong>：数据在Flash中的存储地址（初始值）</li>
 <li><strong>VMA（Virtual Memory Address）</strong>：数据在RAM中的运行地址（实际使用地址）</li>
 </ul>
 <p><strong>在链接脚本中的定义</strong>：</p>
-<pre lang="ld" class="notranslate"><code class="notranslate">.data :
+<div class="highlight highlight-source-c-linker"><pre class="notranslate"><span class="pl-c1">.data</span> :
 {
-    *(.data .data.*)
-    . = ALIGN(4);
-} &gt;RAM AT&gt;FLASH    /* 运行时在RAM，初始值在Flash */
-</code></pre>
+    *(.<span class="pl-smi">data</span> .<span class="pl-smi">data</span>.*)
+    . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);
+} &gt;RAM AT&gt;FLASH    <span class="pl-c"><span class="pl-c">/*</span> 运行时在RAM，初始值在Flash <span class="pl-c">*/</span></span></pre></div>
 <p><strong>启动代码需要完成的工作</strong>：</p>
-<pre lang="c" class="notranslate"><code class="notranslate">// 伪代码示例
-extern uint32_t _sdata;    // .data段的起始地址（RAM）
-extern uint32_t _edata;    // .data段的结束地址（RAM）
-extern uint32_t _sidata;   // .data段在Flash中的初始值地址
+<div class="highlight highlight-source-c"><pre class="notranslate"><span class="pl-c">// 伪代码示例</span>
+<span class="pl-k">extern</span> <span class="pl-smi">uint32_t</span> <span class="pl-s1">_sdata</span>;    <span class="pl-c">// .data段的起始地址（RAM）</span>
+<span class="pl-k">extern</span> <span class="pl-smi">uint32_t</span> <span class="pl-s1">_edata</span>;    <span class="pl-c">// .data段的结束地址（RAM）</span>
+<span class="pl-k">extern</span> <span class="pl-smi">uint32_t</span> <span class="pl-s1">_sidata</span>;   <span class="pl-c">// .data段在Flash中的初始值地址</span>
 
-// 将.data段从Flash复制到RAM
-uint32_t* src = &amp;_sidata;
-uint32_t* dst = &amp;_sdata;
-while (dst &lt; &amp;_edata) {
-    *dst++ = *src++;
-}
-</code></pre>
+<span class="pl-c">// 将.data段从Flash复制到RAM</span>
+<span class="pl-smi">uint32_t</span><span class="pl-c1">*</span> <span class="pl-s1">src</span> <span class="pl-c1">=</span> <span class="pl-c1">&amp;</span><span class="pl-s1">_sidata</span>;
+<span class="pl-smi">uint32_t</span><span class="pl-c1">*</span> <span class="pl-s1">dst</span> <span class="pl-c1">=</span> <span class="pl-c1">&amp;</span><span class="pl-s1">_sdata</span>;
+<span class="pl-k">while</span> (<span class="pl-s1">dst</span> <span class="pl-c1">&lt;</span> <span class="pl-c1">&amp;</span><span class="pl-s1">_edata</span>) {
+    <span class="pl-c1">*</span><span class="pl-s1">dst</span><span class="pl-c1">++</span> <span class="pl-c1">=</span> <span class="pl-c1">*</span><span class="pl-s1">src</span><span class="pl-c1">++</span>;
+}</pre></div>
 <h3>3.4 .bss 段（未初始化数据段）</h3>
 <p><strong>作用</strong>：存放未初始化的全局变量和静态变量，以及初始化为0的变量</p>
 <p><strong>特点</strong>：</p>
@@ -192,30 +185,27 @@ while (dst &lt; &amp;_edata) {
 <li>启动时需要清零（由启动代码完成）</li>
 </ul>
 <p><strong>示例代码对应</strong>：</p>
-<pre lang="c" class="notranslate"><code class="notranslate">int uninit_var;              // 存放在.bss段
-static int static_uninit;    // 存放在.bss段
-int zero_var = 0;            // 也存放在.bss段（因为值为0）
-</code></pre>
+<div class="highlight highlight-source-c"><pre class="notranslate"><span class="pl-smi">int</span> <span class="pl-s1">uninit_var</span>;              <span class="pl-c">// 存放在.bss段</span>
+<span class="pl-k">static</span> <span class="pl-smi">int</span> <span class="pl-s1">static_uninit</span>;    <span class="pl-c">// 存放在.bss段</span>
+<span class="pl-smi">int</span> <span class="pl-s1">zero_var</span> <span class="pl-c1">=</span> <span class="pl-c1">0</span>;            <span class="pl-c">// 也存放在.bss段（因为值为0）</span></pre></div>
 <p><strong>在链接脚本中的定义</strong>：</p>
-<pre lang="ld" class="notranslate"><code class="notranslate">.bss :
+<div class="highlight highlight-source-c-linker"><pre class="notranslate"><span class="pl-c1">.bss</span> :
 {
-    . = ALIGN(4);
-    *(.bss*)
-    *(COMMON)                 /* 未初始化的全局变量 */
-    . = ALIGN(4);
-} &gt;RAM
-</code></pre>
+    . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);
+    *(.<span class="pl-smi">bss</span>*)
+    *(COMMON)                 <span class="pl-c"><span class="pl-c">/*</span> 未初始化的全局变量 <span class="pl-c">*/</span></span>
+    . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);
+} &gt;RAM</pre></div>
 <p><strong>启动代码需要完成的工作</strong>：</p>
-<pre lang="c" class="notranslate"><code class="notranslate">// 伪代码示例
-extern uint32_t _sbss;   // .bss段的起始地址
-extern uint32_t _ebss;   // .bss段的结束地址
+<div class="highlight highlight-source-c"><pre class="notranslate"><span class="pl-c">// 伪代码示例</span>
+<span class="pl-k">extern</span> <span class="pl-smi">uint32_t</span> <span class="pl-s1">_sbss</span>;   <span class="pl-c">// .bss段的起始地址</span>
+<span class="pl-k">extern</span> <span class="pl-smi">uint32_t</span> <span class="pl-s1">_ebss</span>;   <span class="pl-c">// .bss段的结束地址</span>
 
-// 将.bss段清零
-uint32_t* ptr = &amp;_sbss;
-while (ptr &lt; &amp;_ebss) {
-    *ptr++ = 0;
-}
-</code></pre>
+<span class="pl-c">// 将.bss段清零</span>
+<span class="pl-smi">uint32_t</span><span class="pl-c1">*</span> <span class="pl-s1">ptr</span> <span class="pl-c1">=</span> <span class="pl-c1">&amp;</span><span class="pl-s1">_sbss</span>;
+<span class="pl-k">while</span> (<span class="pl-s1">ptr</span> <span class="pl-c1">&lt;</span> <span class="pl-c1">&amp;</span><span class="pl-s1">_ebss</span>) {
+    <span class="pl-c1">*</span><span class="pl-s1">ptr</span><span class="pl-c1">++</span> <span class="pl-c1">=</span> <span class="pl-c1">0</span>;
+}</pre></div>
 <h3>3.5 .init 和 .fini 段（初始化和终结段）</h3>
 <p><strong>作用</strong>：</p>
 <ul>
@@ -228,16 +218,15 @@ while (ptr &lt; &amp;_ebss) {
 <li>在C语言程序中，这些段可能为空或很小</li>
 </ul>
 <p><strong>在链接脚本中的定义</strong>：</p>
-<pre lang="ld" class="notranslate"><code class="notranslate">.init :
+<div class="highlight highlight-source-c-linker"><pre class="notranslate"><span class="pl-c1">.init</span> :
 {
-    KEEP(*(SORT_NONE(.init)))  /* KEEP确保不被优化掉 */
+    <span class="pl-c1">KEEP</span>(*(<span class="pl-c1">SORT_NONE</span>(.<span class="pl-smi">init</span>)))  <span class="pl-c"><span class="pl-c">/*</span> KEEP确保不被优化掉 <span class="pl-c">*/</span></span>
 } &gt;FLASH
 
-.fini :
+<span class="pl-c1">.fini</span> :
 {
-    KEEP(*(SORT_NONE(.fini)))
-} &gt;FLASH
-</code></pre>
+    <span class="pl-c1">KEEP</span>(*(<span class="pl-c1">SORT_NONE</span>(.<span class="pl-smi">fini</span>)))
+} &gt;FLASH</pre></div>
 <h3>3.6 .vector 段（中断向量表）</h3>
 <p><strong>作用</strong>：存放中断向量表，定义了各个中断服务程序的入口地址</p>
 <p><strong>特点</strong>：</p>
@@ -247,12 +236,11 @@ while (ptr &lt; &amp;_ebss) {
 <li>第二个向量是复位向量（Reset Handler）</li>
 </ul>
 <p><strong>在链接脚本中的定义</strong>：</p>
-<pre lang="ld" class="notranslate"><code class="notranslate">.vector :
+<div class="highlight highlight-source-c-linker"><pre class="notranslate"><span class="pl-c1">.vector</span> :
 {
-    *(.vector);        /* 中断向量表 */
-    . = ALIGN(64);     /* 可能需要64字节对齐 */
-} &gt;FLASH
-</code></pre>
+    *(.<span class="pl-smi">vector</span>);        <span class="pl-c"><span class="pl-c">/*</span> 中断向量表 <span class="pl-c">*/</span></span>
+    . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">64</span>);     <span class="pl-c"><span class="pl-c">/*</span> 可能需要64字节对齐 <span class="pl-c">*/</span></span>
+} &gt;FLASH</pre></div>
 <h3>3.7 .stack 段（栈段）</h3>
 <p><strong>作用</strong>：定义程序栈空间</p>
 <p><strong>特点</strong>：</p>
@@ -262,13 +250,12 @@ while (ptr &lt; &amp;_ebss) {
 <li>大小在链接脚本中定义</li>
 </ul>
 <p><strong>在链接脚本中的定义</strong>：</p>
-<pre lang="ld" class="notranslate"><code class="notranslate">.stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size :
+<div class="highlight highlight-source-c-linker"><pre class="notranslate">.stack <span class="pl-en">ORIGIN</span>(RAM) + LENGTH(RAM) - __stack_size :
 {
-    PROVIDE(_susrstack = .);
-    . = . + __stack_size;      /* 栈大小 */
-    PROVIDE(_eusrstack = .);
-} &gt;RAM
-</code></pre>
+    <span class="pl-c1">PROVIDE</span>(_susrstack = .);
+    . = . + __stack_size;      <span class="pl-c"><span class="pl-c">/*</span> 栈大小 <span class="pl-c">*/</span></span>
+    <span class="pl-c1">PROVIDE</span>(_eusrstack = .);
+} &gt;RAM</pre></div>
 <h3>3.8 .heap 段（堆段）</h3>
 <p><strong>作用</strong>：定义动态内存分配空间（malloc/free使用）</p>
 <p><strong>特点</strong>：</p>
@@ -332,34 +319,30 @@ RAM 布局：
 </ul>
 <h2>6. 如何查看BIN文件中的段信息</h2>
 <h3>6.1 使用objdump工具</h3>
-<pre lang="bash" class="notranslate"><code class="notranslate"># 查看ELF文件的段信息
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 查看ELF文件的段信息</span>
 riscv-none-embed-objdump -h firmware.elf
 
-# 输出示例：
-# Idx Name          Size      VMA       LMA       File off  Algn
-#   0 .init         00000020  00000000  00000000  00001000  2**2
-#   1 .text         00001234  00000020  00000020  00001020  2**2
-#   2 .data         00000040  20000000  00001260  00002260  2**2
-</code></pre>
+<span class="pl-c"><span class="pl-c">#</span> 输出示例：</span>
+<span class="pl-c"><span class="pl-c">#</span> Idx Name          Size      VMA       LMA       File off  Algn</span>
+<span class="pl-c"><span class="pl-c">#</span>   0 .init         00000020  00000000  00000000  00001000  2**2</span>
+<span class="pl-c"><span class="pl-c">#</span>   1 .text         00001234  00000020  00000020  00001020  2**2</span>
+<span class="pl-c"><span class="pl-c">#</span>   2 .data         00000040  20000000  00001260  00002260  2**2</span></pre></div>
 <h3>6.2 使用readelf工具</h3>
-<pre lang="bash" class="notranslate"><code class="notranslate"># 查看ELF文件头信息
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 查看ELF文件头信息</span>
 riscv-none-embed-readelf -S firmware.elf
 
-# 查看程序头信息
-riscv-none-embed-readelf -l firmware.elf
-</code></pre>
+<span class="pl-c"><span class="pl-c">#</span> 查看程序头信息</span>
+riscv-none-embed-readelf -l firmware.elf</pre></div>
 <h3>6.3 使用size工具</h3>
-<pre lang="bash" class="notranslate"><code class="notranslate"># 查看各段大小
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 查看各段大小</span>
 riscv-none-embed-size firmware.elf
 
-# 输出示例：
-#    text    data     bss     dec     hex filename
-#    1234      64     256    1554     612 firmware.elf
-</code></pre>
+<span class="pl-c"><span class="pl-c">#</span> 输出示例：</span>
+<span class="pl-c"><span class="pl-c">#</span>    text    data     bss     dec     hex filename</span>
+<span class="pl-c"><span class="pl-c">#</span>    1234      64     256    1554     612 firmware.elf</span></pre></div>
 <h3>6.4 使用hexdump查看BIN文件</h3>
-<pre lang="bash" class="notranslate"><code class="notranslate"># 以十六进制查看BIN文件内容
-hexdump -C firmware.bin | head -20
-</code></pre>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 以十六进制查看BIN文件内容</span>
+hexdump -C firmware.bin <span class="pl-k">|</span> head -20</pre></div>
 <h2>7. BIN文件与ELF文件的区别</h2>
 <h3>7.1 ELF文件（Executable and Linkable Format）</h3>
 <ul>
@@ -376,12 +359,11 @@ hexdump -C firmware.bin | head -20
 <li>按照地址顺序排列的字节流</li>
 </ul>
 <p><strong>转换命令</strong>：</p>
-<pre lang="bash" class="notranslate"><code class="notranslate"># 从ELF生成BIN文件
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 从ELF生成BIN文件</span>
 riscv-none-embed-objcopy -O binary firmware.elf firmware.bin
 
-# 从ELF生成HEX文件（Intel Hex格式）
-riscv-none-embed-objcopy -O ihex firmware.elf firmware.hex
-</code></pre>
+<span class="pl-c"><span class="pl-c">#</span> 从ELF生成HEX文件（Intel Hex格式）</span>
+riscv-none-embed-objcopy -O ihex firmware.elf firmware.hex</pre></div>
 <h2>8. 段对齐的重要性</h2>
 <h3>8.1 为什么需要对齐？</h3>
 <ul>
@@ -390,13 +372,12 @@ riscv-none-embed-objcopy -O ihex firmware.elf firmware.hex
 <li><strong>内存保护</strong>：MMU/MPU通常要求按页对齐</li>
 </ul>
 <h3>8.2 对齐示例</h3>
-<pre lang="ld" class="notranslate"><code class="notranslate">.text :
+<div class="highlight highlight-source-c-linker"><pre class="notranslate"><span class="pl-c1">.text</span> :
 {
-    . = ALIGN(4);    /* 4字节对齐 */
-    *(.text)
-    . = ALIGN(4);
-} &gt;FLASH
-</code></pre>
+    . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);    <span class="pl-c"><span class="pl-c">/*</span> 4字节对齐 <span class="pl-c">*/</span></span>
+    *(.<span class="pl-smi">text</span>)
+    . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);
+} &gt;FLASH</pre></div>
 <h2>9. 优化建议</h2>
 <h3>9.1 减少代码段大小</h3>
 <ul>
