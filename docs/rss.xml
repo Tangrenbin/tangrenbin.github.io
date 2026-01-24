@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Sat, 24 Jan 2026 01:27:01 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>Git客户端存储登录信息</title><link>https://tangrenbin.github.io/post/Git-ke-hu-duan-cun-chu-deng-lu-xin-xi.html</link><description>```shell
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Sat, 24 Jan 2026 01:28:07 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>Git客户端存储登录信息</title><link>https://tangrenbin.github.io/post/Git-ke-hu-duan-cun-chu-deng-lu-xin-xi.html</link><description>```shell
 git config --global user.name 'tangrenbin'
 git config --global user.password ''
 git config --global user.email 'tangrenbin@zc-power.com'
@@ -258,7 +258,8 @@ MCU（微控制器单元）的编译过程通常包括：预处理、编译、�
 5. indent-rainbow（缩进彩虹色显示）
 6. Code Spell Checker（代码拼写检查）
 7. TODO Highlight（高亮显示 TODO 注释）
-8. Slidev（md转ppt）。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/VScode%20-hao-yong-cha-jian.html</guid><pubDate>Thu, 03 Jul 2025 02:29:08 +0000</pubDate></item><item><title>WIFI密码破解</title><link>https://tangrenbin.github.io/post/WIFI-mi-ma-po-jie.html</link><description># 命令
+8. Slidev（md转ppt）
+9. pandoc（md转word）。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/VScode%20-hao-yong-cha-jian.html</guid><pubDate>Thu, 03 Jul 2025 02:29:08 +0000</pubDate></item><item><title>WIFI密码破解</title><link>https://tangrenbin.github.io/post/WIFI-mi-ma-po-jie.html</link><description># 命令
 ```shell
 # 查看可用网卡
 airmon-ng 
