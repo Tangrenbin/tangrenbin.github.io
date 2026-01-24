@@ -5,3 +5,4 @@
 5. indent-rainbow（缩进彩虹色显示）
 6. Code Spell Checker（代码拼写检查）
 7. TODO Highlight（高亮显示 TODO 注释）
+8. Slidev（md转ppt）
