@@ -29,7 +29,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <style>
 .avatar {transition: 0.8s;width:64px;height:64px;object-fit: cover;}
 .avatar:hover{transform: scale(1.15) rotate(360deg);}
-#header h1 a{color:inherit;text-decoration:none;vertical-align: bottom;font-size:40px;font-family:Monaco;margin-left:8px;}
+.title-left a{color:inherit;text-decoration:none;vertical-align: bottom;font-size:40px;font-weight: bold;font-family:Monaco;margin-left:8px;}
 .title-right{display:flex;margin:auto 0 0 auto;}
 .title-right button{margin-right:8px;padding:16px;}
 .title-right .circle{padding: 14px 16px;}
@@ -55,8 +55,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 
 <body>
     <div id="header">
-<h1>
-    <img src="https://github.githubassets.com/favicons/favicon.svg" class="avatar circle" id="avatarImg" alt="avatar"><a class="blogTitle">唐任斌的博客</a></h1>
+<div class="title-left">
+    <img src="https://github.githubassets.com/favicons/favicon.svg" class="avatar circle" id="avatarImg" alt="avatar"><a class="blogTitle">唐任斌的博客</a></div>
 <div class="title-right">
     <a href="https://tangrenbin.github.io/tag.html" id="buttonSearch" class="btn btn-invisible circle" title="搜索">
         <svg class="octicon" width="16" height="16" >
@@ -82,7 +82,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <nav class="SideNav border">
 <a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/jian-li.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">简历</span>
     </div>
@@ -93,7 +93,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/dai-ma-ping-shen-zi-dong-hua-gong-ju.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">代码评审自动化工具</span>
     </div>
@@ -104,7 +104,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/Gemini%20Chat%20Python%20-ke-hu-duan.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">Gemini Chat Python 客户端</span>
     </div>
@@ -115,7 +115,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/Gemini%20Chat%20Shell%20-ke-hu-duan.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">Gemini Chat Shell 客户端</span>
     </div>
@@ -126,7 +126,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/GitLab%20-shi-yong-CI-CD%20-pei-he-lizard%20-sao-miao-dai-ma.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">GitLab 使用CI/CD 配合lizard 扫描代码</span>
     </div>
@@ -137,7 +137,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/Git%20Submodule%20-shi-yong-zhi-nan.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">Git Submodule 使用指南</span>
     </div>
@@ -148,7 +148,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/Cursor%20-ruan-jian-xie-Markdown%20-bei-ge-shi-hua.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">Cursor 软件写Markdown 被格式化</span>
     </div>
@@ -159,7 +159,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/Lizard%20-dai-ma-fu-za-du-fen-xi-gong-ju-shi-yong-zhi-nan.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">Lizard 代码复杂度分析工具使用指南</span>
     </div>
@@ -170,7 +170,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/gitlab%20-pi-liang-dao-chu-mr-ji-lu.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">gitlab 批量导出mr记录</span>
     </div>
@@ -181,7 +181,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/Github-shang-re-men-%20C%20-yu-yan-xiang-mu-hui-zong---.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">Github上热门 C 语言项目汇总
 
@@ -194,7 +194,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/Python%20-pi-liang-ji-suan-liang-ge-bu-tong-ge-shi-shi-jian-chuo-zhi-jian-de-cha-yi.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">Python 批量计算两个不同格式时间戳之间的差异</span>
     </div>
@@ -205,7 +205,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/Linux%20-chang-yong-ming-ling.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">Linux 常用命令</span>
     </div>
@@ -216,7 +216,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/zhong-guo-cheng-xu-yuan-rong-yi-fa-yin-cuo-wu-de-dan-ci.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">中国程序员容易发音错误的单词</span>
     </div>
@@ -227,7 +227,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/alist-tvbox%20-fu-wu-qi-pei-zhi.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">alist-tvbox 服务器配置</span>
     </div>
@@ -238,7 +238,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     </div>
 </a><a class="SideNav-item d-flex flex-items-center flex-justify-between" href="post/yi-jian-an-zhuang-docker-jiao-ben.html">
     <div class="d-flex flex-items-center">
-        <svg class="SideNav-icon octicon" style="witdh:16px;height:16px"><path class="svgTop0" d=""></path>
+        <svg class="SideNav-icon octicon" style="width:16px;height:16px"><path class="svgTop0" d=""></path>
         </svg>
         <span class="listTitle">一键安装docker脚本</span>
     </div>
@@ -265,7 +265,7 @@ if("07/11/2024"!=""){
     var startSite=new Date("07/11/2024");
     var diff=now.getTime()-startSite.getTime();
     var diffDay=Math.floor(diff/(1000*60*60*24));
-    document.getElementById("runday").innerHTML="网站运行"+diffDay+"天"+" • ";
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
 }
 </script></div>
 </body>
