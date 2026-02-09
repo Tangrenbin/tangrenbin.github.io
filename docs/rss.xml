@@ -1,5 +1,149 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Sat, 24 Jan 2026 01:28:07 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>Git客户端存储登录信息</title><link>https://tangrenbin.github.io/post/Git-ke-hu-duan-cun-chu-deng-lu-xin-xi.html</link><description>```shell
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Mon, 09 Feb 2026 07:57:10 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>定投计算器</title><link>https://tangrenbin.github.io/post/ding-tou-ji-suan-qi.html</link><description># 计算脚本
+
+```python
+TRADING_DAYS_PER_YEAR = 252
+YEARS_TO_CALCULATE = [5, 10, 15, 20, 25, 30]
+
+ASSET_ANNUAL_RETURN = {
+    '纳斯达克100': 0.12,
+    '标普500': 0.10,
+    '黄金': 0.06,
+    '债券': 0.035,
+}
+
+
+def calculate_expected_value(daily_amount, annual_return, years):
+    periods = TRADING_DAYS_PER_YEAR * years
+    principal = daily_amount * periods
+    daily_return = (1 + annual_return) ** (1 / TRADING_DAYS_PER_YEAR) - 1
+
+    if abs(daily_return) &lt; 1e-12:
+        total_amount = principal
+    else:
+        total_amount = daily_amount * (((1 + daily_return) ** periods - 1) / daily_return)
+
+    profit = total_amount - principal
+    return principal, profit, total_amount
+
+
+def calculate_plan(total_amount, output_file='定投结果.txt'):
+    output_lines = []
+
+    def emit(line=''):
+        output_lines.append(line)
+        print(line)
+
+    plans = {
+        '稳健型': {
+            '纳斯达克100': 0.20,
+            '标普500': 0.30,
+            '黄金': 0.25,
+            '债券': 0.25
+        },
+        '均衡型（推荐）': {
+            '纳斯达克100': 0.30,
+            '标普500': 0.30,
+            '黄金': 0.20,
+            '债券': 0.20
+        },
+        '进取型': {
+            '纳斯达克100': 0.40,
+            '标普500': 0.30,
+            '黄金': 0.15,
+            '债券': 0.15
+        }
+    }
+
+    for plan_name, assets in plans.items():
+        emit(f'\n【{plan_name}】')
+        total = 0
+        plan_annual_return = 0
+        for asset, ratio in assets.items():
+            amount = round(total_amount * ratio)
+            total += amount
+            plan_annual_return += ASSET_ANNUAL_RETURN.get(asset, 0) * ratio
+            emit(f'{asset}：{amount} 元')
+        emit(f'合计：{total} 元')
+
+        emit(f'组合预期年化收益率：{plan_annual_return * 100:.2f}%')
+        emit('年限 | 本金(万元) | 收益(万元) | 总金额(万元)')
+        emit('-' * 49)
+
+        for years in YEARS_TO_CALCULATE:
+            principal, profit, total_future = calculate_expected_value(total_amount, plan_annual_return, years)
+            principal_wan = principal / 10000
+            profit_wan = profit / 10000
+            total_future_wan = total_future / 10000
+            emit(
+                f'{years:&gt;2}年 | {principal_wan:&gt;10,.2f} | {profit_wan:&gt;10,.2f} | {total_future_wan:&gt;12,.2f}'
+            )
+
+    with open(output_file, 'w', encoding='utf-8') as file:
+        file.write('\n'.join(output_lines) + '\n')
+
+    print(f'\n结果已输出到：{output_file}')
+
+
+if __name__ == '__main__':
+    total_amount = float(input('请输入每个交易日定投总金额（元）：'))
+    calculate_plan(total_amount)
+
+```
+
+# 结果
+
+```txt
+
+【稳健型】
+纳斯达克100：60 元
+标普500：90 元
+黄金：75 元
+债券：75 元
+合计：300 元
+组合预期年化收益率：7.78%
+年限 | 本金(万元) | 收益(万元) | 总金额(万元)
+-------------------------------------------------
+ 5年 |      37.80 |       8.04 |        45.84
+10年 |      75.60 |      36.90 |       112.50
+15年 |     113.40 |      96.02 |       209.42
+20年 |     151.20 |     199.16 |       350.36
+25年 |     189.00 |     366.30 |       555.30
+30年 |     226.80 |     626.49 |       853.29
+
+【均衡型（推荐）】
+纳斯达克100：90 元
+标普500：90 元
+黄金：60 元
+债券：60 元
+合计：300 元
+组合预期年化收益率：8.50%
+年限 | 本金(万元) | 收益(万元) | 总金额(万元)
+-------------------------------------------------
+ 5年 |      37.80 |       8.87 |        46.67
+10年 |      75.60 |      41.24 |       116.84
+15年 |     113.40 |     108.95 |       222.35
+20年 |     151.20 |     229.80 |       381.00
+25年 |     189.00 |     430.56 |       619.56
+30年 |     226.80 |     751.47 |       978.27
+
+【进取型】
+纳斯达克100：120 元
+标普500：90 元
+黄金：45 元
+债券：45 元
+合计：300 元
+组合预期年化收益率：9.22%
+年限 | 本金(万元) | 收益(万元) | 总金额(万元)
+-------------------------------------------------
+ 5年 |      37.80 |       9.70 |        47.50
+10年 |      75.60 |      45.75 |       121.35
+15年 |     113.40 |     122.76 |       236.16
+20年 |     151.20 |     263.43 |       414.63
+25年 |     189.00 |     503.08 |       692.08
+30年 |     226.80 |     896.59 |     1,123.39
+
+```。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/ding-tou-ji-suan-qi.html</guid><pubDate>Mon, 09 Feb 2026 07:56:42 +0000</pubDate></item><item><title>Git客户端存储登录信息</title><link>https://tangrenbin.github.io/post/Git-ke-hu-duan-cun-chu-deng-lu-xin-xi.html</link><description>```shell
 git config --global user.name 'tangrenbin'
 git config --global user.password ''
 git config --global user.email 'tangrenbin@zc-power.com'
