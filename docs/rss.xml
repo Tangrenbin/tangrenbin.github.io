@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Mon, 09 Feb 2026 07:57:10 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>定投计算器</title><link>https://tangrenbin.github.io/post/ding-tou-ji-suan-qi.html</link><description># 计算脚本
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Tue, 10 Feb 2026 16:49:44 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>定投计算器</title><link>https://tangrenbin.github.io/post/ding-tou-ji-suan-qi.html</link><description># 计算脚本
 
 ```python
 TRADING_DAYS_PER_YEAR = 252
@@ -395,7 +395,8 @@ MCU（微控制器单元）的编译过程通常包括：预处理、编译、�
   }
 }
 ```
-。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/claude-code-pei-zhi-wen-jian.html</guid><pubDate>Thu, 18 Sep 2025 15:54:07 +0000</pubDate></item><item><title>VScode 好用插件</title><link>https://tangrenbin.github.io/post/VScode%20-hao-yong-cha-jian.html</link><description>1. Markdown Preview Enhanced（支持 Markdown 一键导出为 HTML/PDF）
+。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/claude-code-pei-zhi-wen-jian.html</guid><pubDate>Thu, 18 Sep 2025 15:54:07 +0000</pubDate></item><item><title>影视资源</title><link>https://tangrenbin.github.io/post/ying-shi-zi-yuan.html</link><description>- [短剧](https://www.kuakema.com/)
+- [电影搜索](https://www.duanjuso.com/)。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/ying-shi-zi-yuan.html</guid><pubDate>Sun, 20 Jul 2025 09:16:44 +0000</pubDate></item><item><title>VScode 好用插件</title><link>https://tangrenbin.github.io/post/VScode%20-hao-yong-cha-jian.html</link><description>1. Markdown Preview Enhanced（支持 Markdown 一键导出为 HTML/PDF）
 2. markmap（将 Markdown 转换为思维导图）
 3. GitHub Theme（GitHub 风格主题）
 4. Prettier（代码自动格式化工具）
