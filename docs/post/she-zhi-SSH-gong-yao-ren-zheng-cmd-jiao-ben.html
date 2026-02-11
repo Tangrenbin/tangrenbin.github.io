@@ -51,7 +51,7 @@ where ssh >nul 2>&1 || (
 <meta property="og:url" content="https://tangrenbin.github.io/post/she-zhi-SSH-gong-yao-ren-zheng-cmd-jiao-ben.html">
 <meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
 <title>设置SSH公钥认证cmd脚本</title>
-
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
 </head>
@@ -75,7 +75,17 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     body {padding: 8px;}
     .postTitle{font-size:24px;}
 }
-
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
 </style>
 
 
@@ -107,148 +117,147 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><pre lang="bat" class="notranslate"><code class="notranslate">@echo off
+<div class="markdown-body" id="postBody"><div class="highlight highlight-source-batchfile"><pre class="notranslate"><span class="pl-k">@</span><span class="pl-k">echo</span> <span class="pl-k">off</span>
 setlocal EnableExtensions EnableDelayedExpansion
 
-:: 让中文提示正常显示（UTF-8）；脚本结束时会恢复原代码页
-for /f "tokens=2 delims=:" %%A in ('chcp') do set "origChcp=%%A"
-set "origChcp=!origChcp: =!"
-chcp 65001 &gt;nul
+<span class="pl-c"><span class="pl-c">::</span> 让中文提示正常显示（UTF-8）；脚本结束时会恢复原代码页</span>
+<span class="pl-k">for</span> /f <span class="pl-s"><span class="pl-pds">"</span>tokens=2 delims=:<span class="pl-pds">"</span></span> <span class="pl-v">%%A</span> <span class="pl-k">in</span> ('chcp') <span class="pl-k">do</span> <span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">origChcp</span><span class="pl-k">=</span><span class="pl-v">%%A</span><span class="pl-pds">"</span></span>
+<span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">origChcp</span><span class="pl-k">=</span><span class="pl-smi">!origChcp:<span class="pl-s"> </span>=!</span><span class="pl-pds">"</span></span>
+<span class="pl-k">chcp</span> <span class="pl-c1">65001</span> <span class="pl-k">&gt;</span><span class="pl-c1">nul</span>
 
-pushd "%~dp0" &gt;nul 2&gt;&amp;1
+<span class="pl-k">pushd</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-v">%~dp0</span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;</span><span class="pl-c1">nul</span> <span class="pl-c1">2</span><span class="pl-k">&gt;&amp;</span>1
 
-:: 更改文本颜色为亮绿色
-color 0A
-title 配置无密码 SSH 连接
+<span class="pl-c"><span class="pl-c">::</span> 更改文本颜色为亮绿色</span>
+<span class="pl-k">color</span> 0A
+<span class="pl-k">title</span> 配置无密码 <span class="pl-k">SSH</span> 连接
 
-:: 依赖检查（Windows OpenSSH）
-where ssh &gt;nul 2&gt;&amp;1 || (
-  echo [ERROR] 未找到 ssh。请在“可选功能”里安装 OpenSSH Client。
-  goto :end
+<span class="pl-c"><span class="pl-c">::</span> 依赖检查（Windows OpenSSH）</span>
+<span class="pl-k">where</span> <span class="pl-k">ssh</span> <span class="pl-k">&gt;</span><span class="pl-c1">nul</span> <span class="pl-c1">2</span><span class="pl-k">&gt;&amp;</span>1 <span class="pl-k">||</span> (
+  <span class="pl-k">echo</span> [ERROR] 未找到 ssh。请在“可选功能”里安装 OpenSSH Client。
+  <span class="pl-k">goto</span> :<span class="pl-k">end</span>
 )
-where ssh-keygen &gt;nul 2&gt;&amp;1 || (
-  echo [ERROR] 未找到 ssh-keygen。请在“可选功能”里安装 OpenSSH Client。
-  goto :end
-)
-
-:: 默认连接参数（可直接回车使用默认值）
-set "host=172.17.0.100"
-set "port=4036"
-set "username="
-
-echo.
-set /p hostInput=请输入主机IP/域名 [默认: %host%] :
-if defined hostInput set "host=!hostInput!"
-
-set /p portInput=请输入端口 [默认: %port%] :
-if defined portInput set "port=!portInput!"
-
-:askUser
-set /p username=请输入用户名 (必填) :
-if not defined username (
-  echo 用户名不能为空，请重新输入。
-  goto :askUser
+<span class="pl-k">where</span> <span class="pl-k">ssh-keygen</span> <span class="pl-k">&gt;</span><span class="pl-c1">nul</span> <span class="pl-c1">2</span><span class="pl-k">&gt;&amp;</span>1 <span class="pl-k">||</span> (
+  <span class="pl-k">echo</span> [ERROR] 未找到 ssh-keygen。请在“可选功能”里安装 OpenSSH Client。
+  <span class="pl-k">goto</span> :<span class="pl-k">end</span>
 )
 
-:: 密钥位置（使用用户目录下的 .ssh）
-set "sshDir=%USERPROFILE%\.ssh"
-:: 兼容性优先：默认使用 RSA 2048（如需更高安全/更短密钥，可改为 ed25519）
-set "keyType=rsa"
-set "keyBits=2048"
-set "keyFile=%sshDir%\id_!keyType!"
-set "pubFile=%keyFile%.pub"
+<span class="pl-c"><span class="pl-c">::</span> 默认连接参数（可直接回车使用默认值）</span>
+<span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">host</span><span class="pl-k">=</span>172.17.0.100<span class="pl-pds">"</span></span>
+<span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">port</span><span class="pl-k">=</span>4036<span class="pl-pds">"</span></span>
+<span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">username</span><span class="pl-k">=</span><span class="pl-pds">"</span></span>
 
-if not exist "%sshDir%" mkdir "%sshDir%" &gt;nul 2&gt;&amp;1
+<span class="pl-k">echo</span>.
+<span class="pl-k">set</span> /p <span class="pl-smi">hostInput</span><span class="pl-k">=</span>请输入主机IP/域名 [默认: %host%] :
+<span class="pl-k">if</span> <span class="pl-k">defined</span> hostInput <span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">host</span><span class="pl-k">=</span><span class="pl-smi">!hostInput!</span><span class="pl-pds">"</span></span>
 
-echo.
-echo 步骤1: 准备 SSH 密钥对（%keyType%）
-if exist "%keyFile%" (
-  if exist "%pubFile%" (
-    echo 已存在密钥: "%keyFile%"
-  ) else (
-    echo [WARN] 找到私钥但缺少公钥，将尝试重新生成公钥...
-    ssh-keygen -y -f "%keyFile%" &gt; "%pubFile%"
-    if errorlevel 1 (
-      echo [ERROR] 无法从私钥生成公钥，请检查 "%keyFile%"
-      goto :end
+<span class="pl-k">set</span> /p <span class="pl-smi">portInput</span><span class="pl-k">=</span>请输入端口 [默认: %port%] :
+<span class="pl-k">if</span> <span class="pl-k">defined</span> portInput <span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">port</span><span class="pl-k">=</span><span class="pl-smi">!portInput!</span><span class="pl-pds">"</span></span>
+
+:<span class="pl-k">askUser</span>
+<span class="pl-k">set</span> /p <span class="pl-smi">username</span><span class="pl-k">=</span>请输入用户名 (必填) :
+<span class="pl-k">if</span> <span class="pl-k">not</span> <span class="pl-k">defined</span> username (
+  <span class="pl-k">echo</span> 用户名不能为空，请重新输入。
+  <span class="pl-k">goto</span> :<span class="pl-k">askUser</span>
+)
+
+<span class="pl-c"><span class="pl-c">::</span> 密钥位置（使用用户目录下的 .ssh）</span>
+<span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">sshDir</span><span class="pl-k">=</span><span class="pl-smi">%USERPROFILE%</span>\.ssh<span class="pl-pds">"</span></span>
+<span class="pl-c"><span class="pl-c">::</span> 兼容性优先：默认使用 RSA 2048（如需更高安全/更短密钥，可改为 ed25519）</span>
+<span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">keyType</span><span class="pl-k">=</span>rsa<span class="pl-pds">"</span></span>
+<span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">keyBits</span><span class="pl-k">=</span>2048<span class="pl-pds">"</span></span>
+<span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">keyFile</span><span class="pl-k">=</span><span class="pl-smi">%sshDir%</span>\id_<span class="pl-smi">!keyType!</span><span class="pl-pds">"</span></span>
+<span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">pubFile</span><span class="pl-k">=</span><span class="pl-smi">%keyFile%</span>.pub<span class="pl-pds">"</span></span>
+
+<span class="pl-k">if</span> <span class="pl-k">not</span> <span class="pl-k">exist</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%sshDir%</span><span class="pl-pds">"</span></span> <span class="pl-k">mkdir</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%sshDir%</span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;</span><span class="pl-c1">nul</span> <span class="pl-c1">2</span><span class="pl-k">&gt;&amp;</span>1
+
+<span class="pl-k">echo</span>.
+<span class="pl-k">echo</span> 步骤1: 准备 SSH 密钥对（<span class="pl-smi">%keyType%</span>）
+<span class="pl-k">if</span> <span class="pl-k">exist</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%keyFile%</span><span class="pl-pds">"</span></span> (
+  <span class="pl-k">if</span> <span class="pl-k">exist</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%pubFile%</span><span class="pl-pds">"</span></span> (
+    <span class="pl-k">echo</span> 已存在密钥: <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%keyFile%</span><span class="pl-pds">"</span></span>
+  ) <span class="pl-k">else</span> (
+    <span class="pl-k">echo</span> [WARN] 找到私钥但缺少公钥，将尝试重新生成公钥...
+    <span class="pl-k">ssh-keygen</span> -y -f <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%keyFile%</span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%pubFile%</span><span class="pl-pds">"</span></span>
+    <span class="pl-k">if</span> <span class="pl-k">errorlevel</span> <span class="pl-c1">1</span> (
+      <span class="pl-k">echo</span> [ERROR] 无法从私钥生成公钥，请检查 <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%keyFile%</span><span class="pl-pds">"</span></span>
+      <span class="pl-k">goto</span> :<span class="pl-k">end</span>
     )
   )
-) else (
-  echo 正在生成密钥（不设置口令，后续登录不再提示密码/口令）...
-  if /i "%keyType%"=="rsa" (
-    ssh-keygen -t rsa -b %keyBits% -a 64 -f "%keyFile%" -N "" -C "%username%@%COMPUTERNAME%"
-  ) else (
-    ssh-keygen -t %keyType% -a 64 -f "%keyFile%" -N "" -C "%username%@%COMPUTERNAME%"
+) <span class="pl-k">else</span> (
+  <span class="pl-k">echo</span> 正在生成密钥（不设置口令，后续登录不再提示密码/口令）...
+  <span class="pl-k">if</span> /i <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%keyType%</span><span class="pl-pds">"</span></span><span class="pl-k">==</span><span class="pl-s"><span class="pl-pds">"</span>rsa<span class="pl-pds">"</span></span> (
+    <span class="pl-k">ssh-keygen</span> -t rsa -b <span class="pl-smi">%keyBits%</span> -a <span class="pl-c1">64</span> -f <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%keyFile%</span><span class="pl-pds">"</span></span> -N <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> -C <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%username%</span>@<span class="pl-smi">%COMPUTERNAME%</span><span class="pl-pds">"</span></span>
+  ) <span class="pl-k">else</span> (
+    <span class="pl-k">ssh-keygen</span> -t <span class="pl-smi">%keyType%</span> -a <span class="pl-c1">64</span> -f <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%keyFile%</span><span class="pl-pds">"</span></span> -N <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> -C <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%username%</span>@<span class="pl-smi">%COMPUTERNAME%</span><span class="pl-pds">"</span></span>
   )
-  if errorlevel 1 (
-    echo [ERROR] ssh-keygen 失败。
-    goto :end
-  )
-)
-
-echo.
-echo 步骤2: 将公钥写入远端 authorized_keys（会提示输入一次远端登录密码）
-
-:: 优先使用 WSL 的 ssh-copy-id（更稳妥，会去重/修权限）；没有 WSL 时使用纯 Windows 方式追加
-where wsl &gt;nul 2&gt;&amp;1
-if errorlevel 1 (
-  goto :windowsCopy
-) else (
-  call :toWslPath "%pubFile%" pubFileWsl
-  if not defined pubFileWsl (
-    echo [WARN] 无法获取公钥的 WSL 路径，将尝试使用 Windows 方式追加公钥...
-    goto :windowsCopy
-  )
-  wsl -e ssh-copy-id -i "!pubFileWsl!" -p "!port!" "!username!@!host!"
-  if errorlevel 1 (
-    echo [WARN] ssh-copy-id 失败，将尝试使用 Windows 方式追加公钥...
-    goto :windowsCopy
+  <span class="pl-k">if</span> <span class="pl-k">errorlevel</span> <span class="pl-c1">1</span> (
+    <span class="pl-k">echo</span> [ERROR] ssh-keygen 失败。
+    <span class="pl-k">goto</span> :<span class="pl-k">end</span>
   )
 )
-goto :afterCopy
 
-:windowsCopy
-:: 将公钥通过 ssh 追加到远端 ~/.ssh/authorized_keys（不依赖 WSL；会提示输入一次远端登录密码）
-type "%pubFile%" | ssh -p "!port!" "!username!@!host!" "mkdir -p ~/.ssh &amp;&amp; chmod 700 ~/.ssh &amp;&amp; (command -v tr &gt;/dev/null 2&gt;&amp;1 &amp;&amp; tr -d '\r' || cat) &gt;&gt; ~/.ssh/authorized_keys &amp;&amp; chmod 600 ~/.ssh/authorized_keys"
-if errorlevel 1 (
-  echo [ERROR] 追加公钥失败（可能远端 shell 不兼容，或缺少 tr 等工具）。
-  echo 你可以手动将 "%pubFile%" 内容追加到远端: ~/.ssh/authorized_keys
-  goto :end
+<span class="pl-k">echo</span>.
+<span class="pl-k">echo</span> 步骤2: 将公钥写入远端 authorized_keys（会提示输入一次远端登录密码）
+
+<span class="pl-c"><span class="pl-c">::</span> 优先使用 WSL 的 ssh-copy-id（更稳妥，会去重/修权限）；没有 WSL 时使用纯 Windows 方式追加</span>
+<span class="pl-k">where</span> <span class="pl-k">wsl</span> <span class="pl-k">&gt;</span><span class="pl-c1">nul</span> <span class="pl-c1">2</span><span class="pl-k">&gt;&amp;</span>1
+<span class="pl-k">if</span> <span class="pl-k">errorlevel</span> <span class="pl-c1">1</span> (
+  <span class="pl-k">goto</span> :<span class="pl-k">windowsCopy</span>
+) <span class="pl-k">else</span> (
+  <span class="pl-k">call</span> :<span class="pl-k">toWslPath</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%pubFile%</span><span class="pl-pds">"</span></span> pubFileWsl
+  <span class="pl-k">if</span> <span class="pl-k">not</span> <span class="pl-k">defined</span> pubFileWsl (
+    <span class="pl-k">echo</span> [WARN] 无法获取公钥的 WSL 路径，将尝试使用 Windows 方式追加公钥...
+    <span class="pl-k">goto</span> :<span class="pl-k">windowsCopy</span>
+  )
+  <span class="pl-k">wsl</span> -e ssh-copy-id -i <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">!pubFileWsl!</span><span class="pl-pds">"</span></span> -p <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">!port!</span><span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">!username!</span>@<span class="pl-smi">!host!</span><span class="pl-pds">"</span></span>
+  <span class="pl-k">if</span> <span class="pl-k">errorlevel</span> <span class="pl-c1">1</span> (
+    <span class="pl-k">echo</span> [WARN] ssh-copy-id 失败，将尝试使用 Windows 方式追加公钥...
+    <span class="pl-k">goto</span> :<span class="pl-k">windowsCopy</span>
+  )
+)
+<span class="pl-k">goto</span> :<span class="pl-k">afterCopy</span>
+
+:<span class="pl-k">windowsCopy</span>
+<span class="pl-c"><span class="pl-c">::</span> 将公钥通过 ssh 追加到远端 ~/.ssh/authorized_keys（不依赖 WSL；会提示输入一次远端登录密码）</span>
+<span class="pl-k">type</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%pubFile%</span><span class="pl-pds">"</span></span> <span class="pl-k">|</span> <span class="pl-k">ssh</span> -p <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">!port!</span><span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">!username!</span>@<span class="pl-smi">!host!</span><span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>mkdir -p ~/.ssh &amp;&amp; chmod 700 ~/.ssh &amp;&amp; (command -v tr &gt;/dev/null 2&gt;&amp;1 &amp;&amp; tr -d '\r' || cat) &gt;&gt; ~/.ssh/authorized_keys &amp;&amp; chmod 600 ~/.ssh/authorized_keys<span class="pl-pds">"</span></span>
+<span class="pl-k">if</span> <span class="pl-k">errorlevel</span> <span class="pl-c1">1</span> (
+  <span class="pl-k">echo</span> [ERROR] 追加公钥失败（可能远端 shell 不兼容，或缺少 tr 等工具）。
+  <span class="pl-k">echo</span> 你可以手动将 <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%pubFile%</span><span class="pl-pds">"</span></span> 内容追加到远端: ~/.ssh/authorized_keys
+  <span class="pl-k">goto</span> :<span class="pl-k">end</span>
 )
 
-:afterCopy
-echo.
-echo 步骤3: 验证无密码连接（不应再提示输入远端密码）
-ssh -o StrictHostKeyChecking=accept-new -o BatchMode=yes -o ConnectTimeout=8 -p "!port!" "!username!@!host!" "echo SSH_OK"
-if errorlevel 1 (
-  echo [WARN] 仍然需要密码/或连接失败。请检查：
-  echo   1^) 远端是否启用公钥认证（sshd_config: PubkeyAuthentication yes）
-  echo   2^) 远端 ~/.ssh 和 authorized_keys 权限是否正确（700/600）
-  echo   3^) 端口/用户名/主机是否正确
-  echo   4^) 是否被 Fail2ban/防火墙拦截
-  echo.
-  echo 可尝试用更详细日志排查：
-  echo   ssh -vvv -p "!port!" "!username!@!host!"
-) else (
-  echo OK: 已可无密码登录。
+:<span class="pl-k">afterCopy</span>
+<span class="pl-k">echo</span>.
+<span class="pl-k">echo</span> 步骤3: 验证无密码连接（不应再提示输入远端密码）
+<span class="pl-k">ssh</span> -o StrictHostKeyChecking=accept-new -o BatchMode=yes -o ConnectTimeout=<span class="pl-c1">8</span> -p <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">!port!</span><span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">!username!</span>@<span class="pl-smi">!host!</span><span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>echo SSH_OK<span class="pl-pds">"</span></span>
+<span class="pl-k">if</span> <span class="pl-k">errorlevel</span> <span class="pl-c1">1</span> (
+  <span class="pl-k">echo</span> [WARN] 仍然需要密码/或连接失败。请检查：
+  <span class="pl-k">echo</span>   1<span class="pl-cce">^</span>) 远端是否启用公钥认证（sshd_config: PubkeyAuthentication yes）
+  <span class="pl-k">echo</span>   2<span class="pl-cce">^</span>) 远端 ~/.ssh 和 authorized_keys 权限是否正确（700/600）
+  <span class="pl-k">echo</span>   3<span class="pl-cce">^</span>) 端口/用户名/主机是否正确
+  <span class="pl-k">echo</span>   4<span class="pl-cce">^</span>) 是否被 Fail2ban/防火墙拦截
+  <span class="pl-k">echo</span>.
+  <span class="pl-k">echo</span> 可尝试用更详细日志排查：
+  <span class="pl-k">echo</span>   ssh -vvv -p <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">!port!</span><span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">!username!</span>@<span class="pl-smi">!host!</span><span class="pl-pds">"</span></span>
+) <span class="pl-k">else</span> (
+  <span class="pl-k">echo</span> OK: 已可无密码登录。
 )
 
-goto :end
+<span class="pl-k">goto</span> :<span class="pl-k">end</span>
 
-:: 将 Windows 路径转换为 WSL 路径（输出到变量名）
-:: 用法: call :toWslPath "C:\path\file" outVar
-:toWslPath
-set "inPath=%~1"
-for /f "usebackq delims=" %%A in (`wsl -e wslpath -a "%inPath%"`) do set "%~2=%%A"
-exit /b 0
+<span class="pl-c"><span class="pl-c">::</span> 将 Windows 路径转换为 WSL 路径（输出到变量名）</span>
+<span class="pl-c"><span class="pl-c">::</span> 用法: call :toWslPath "C:\path\file" outVar</span>
+:<span class="pl-k">toWslPath</span>
+<span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">inPath</span><span class="pl-k">=</span><span class="pl-v">%~1</span><span class="pl-pds">"</span></span>
+<span class="pl-k">for</span> /f <span class="pl-s"><span class="pl-pds">"</span>usebackq delims=<span class="pl-pds">"</span></span> <span class="pl-v">%%A</span> <span class="pl-k">in</span> (`wsl -e wslpath -a <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%inPath%</span><span class="pl-pds">"</span></span>`) <span class="pl-k">do</span> <span class="pl-k">set</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">%~2</span><span class="pl-k">=</span><span class="pl-v">%%A</span><span class="pl-pds">"</span></span>
+<span class="pl-k">exit</span> /b <span class="pl-c1">0</span>
 
-:end
-if defined origChcp chcp !origChcp! &gt;nul
-popd &gt;nul 2&gt;&amp;1
-endlocal
-pause
-
-</code></pre></div>
+:<span class="pl-k">end</span>
+<span class="pl-k">if</span> <span class="pl-k">defined</span> origChcp <span class="pl-k">chcp</span> <span class="pl-smi">!origChcp!</span> <span class="pl-k">&gt;</span><span class="pl-c1">nul</span>
+<span class="pl-k">popd</span> <span class="pl-k">&gt;</span><span class="pl-c1">nul</span> <span class="pl-c1">2</span><span class="pl-k">&gt;&amp;</span>1
+<span class="pl-k">endlocal</span>
+<span class="pl-k">pause</span>
+</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
@@ -273,7 +282,7 @@ if("07/11/2024"!=""){
 </script></div>
 </body>
 <script>
-var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
 var utterancesLoad=0;
 
 let themeSettings={
@@ -347,7 +356,70 @@ function iFrameLoading(){
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
 
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
 
 </script>
 <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekTOC.js'></script><script src='https://blog.meekdai.com/Gmeek/plugins/lightbox.js'></script>
