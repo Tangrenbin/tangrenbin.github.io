@@ -1,5 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Tue, 10 Feb 2026 16:49:44 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>定投计算器</title><link>https://tangrenbin.github.io/post/ding-tou-ji-suan-qi.html</link><description># 计算脚本
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>唐任斌的博客</title><link>https://tangrenbin.github.io</link><description>探索技术边界的思考与分享</description><copyright>唐任斌的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://tangrenbin.github.io</link></image><lastBuildDate>Sat, 21 Feb 2026 12:22:24 +0000</lastBuildDate><managingEditor>唐任斌的博客</managingEditor><ttl>60</ttl><webMaster>唐任斌的博客</webMaster><item><title>OpenRouter 免费模型价值结论（2026-02-21）</title><link>https://tangrenbin.github.io/post/OpenRouter%20-mian-fei-mo-xing-jia-zhi-jie-lun-%EF%BC%882026-02-21%EF%BC%89.html</link><description># OpenRouter 免费模型价值结论（2026-02-21）
+
+## 结论摘要
+按“免费可用 + 实际能力 + 长期可用性”综合评估，这批模型中价值最高的是：
+
+1. Step 3.5 Flash (free)
+2. DeepSeek R1 0528 (free)
+3. GLM 4.5 Air (free)
+4. gpt-oss-120b (free)
+5. Trinity Large Preview (free)
+
+## 简要理由
+- Step 3.5 Flash (free)：综合能力强，256K 长上下文，推理/代码/Agent 场景都能覆盖。</description><guid isPermaLink="true">https://tangrenbin.github.io/post/OpenRouter%20-mian-fei-mo-xing-jia-zhi-jie-lun-%EF%BC%882026-02-21%EF%BC%89.html</guid><pubDate>Sat, 21 Feb 2026 12:21:57 +0000</pubDate></item><item><title>定投计算器</title><link>https://tangrenbin.github.io/post/ding-tou-ji-suan-qi.html</link><description># 计算脚本
 
 ```python
 TRADING_DAYS_PER_YEAR = 252
