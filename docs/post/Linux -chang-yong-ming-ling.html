@@ -85,7 +85,7 @@ last -x shutdown | head -n
 <meta property="og:url" content="https://tangrenbin.github.io/post/Linux%20-chang-yong-ming-ling.html">
 <meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
 <title>Linux 常用命令</title>
-<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
 
 
 </head>
@@ -152,17 +152,23 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>查看当前系统运行时长</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">uptime -p</pre></div>
+<pre lang="shell" class="notranslate"><code class="notranslate">uptime -p
+</code></pre>
 <h1>查看最后一次启动时间</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">who -b</pre></div>
+<pre lang="shell" class="notranslate"><code class="notranslate">who -b
+</code></pre>
 <h1>查看重启日期</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">last -x reboot</pre></div>
+<pre lang="shell" class="notranslate"><code class="notranslate">last -x reboot
+</code></pre>
 <h1>查看最后 N 次重启日期</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">last -x reboot <span class="pl-k">|</span> head -n</pre></div>
+<pre lang="shell" class="notranslate"><code class="notranslate">last -x reboot | head -n
+</code></pre>
 <h1>查看关机日期</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">last -x shutdown</pre></div>
+<pre lang="shell" class="notranslate"><code class="notranslate">last -x shutdown
+</code></pre>
 <h1>查看最后 N 次关机日期</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">last -x shutdown <span class="pl-k">|</span> head -n</pre></div>
+<pre lang="shell" class="notranslate"><code class="notranslate">last -x shutdown | head -n
+</code></pre>
 <h1>创建闹钟任务</h1>
 <pre class="notranslate"><code class="notranslate">命令：crontab -e
 名称：cron 表达式
@@ -182,7 +188,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 解释：每天凌晨 7 点复位
 </code></pre>
 <h1>连续输入 N 条相同的信息</h1>
-<div class="highlight highlight-source-shell"><pre class="notranslate">yes <span class="pl-s"><span class="pl-pds">"</span>你好<span class="pl-pds">"</span></span> <span class="pl-k">|</span> head -n 10</pre></div>
+<pre lang="shell" class="notranslate"><code class="notranslate">yes "你好" | head -n 10
+</code></pre>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/3a2f2e87-aeb4-4efd-ac36-cac1597edafa"><img src="https://github.com/user-attachments/assets/3a2f2e87-aeb4-4efd-ac36-cac1597edafa" alt="image" style="max-width: 100%;"></a></p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
