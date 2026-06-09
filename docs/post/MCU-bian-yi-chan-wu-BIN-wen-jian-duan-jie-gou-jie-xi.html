@@ -122,7 +122,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     *(.<span class="pl-smi">text</span>)        <span class="pl-c"><span class="pl-c">/*</span> 所有目标文件的.text段 <span class="pl-c">*/</span></span>
     *(.<span class="pl-smi">text</span>.*)      <span class="pl-c"><span class="pl-c">/*</span> 子段 <span class="pl-c">*/</span></span>
     . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);   <span class="pl-c"><span class="pl-c">/*</span> 4字节对齐 <span class="pl-c">*/</span></span>
-} &gt;FLASH            <span class="pl-c"><span class="pl-c">/*</span> 存放在Flash中 <span class="pl-c">*/</span></span></pre></div>
+} &gt;<span class="pl-c1">FLASH</span>            <span class="pl-c"><span class="pl-c">/*</span> 存放在Flash中 <span class="pl-c">*/</span></span></pre></div>
 <h3>3.2 .rodata 段（只读数据段）</h3>
 <p><strong>作用</strong>：存放只读数据，如字符串常量、全局const变量</p>
 <p><strong>特点</strong>：</p>
@@ -140,7 +140,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     *(.<span class="pl-smi">text</span>)
     *(.<span class="pl-smi">rodata</span>)      <span class="pl-c"><span class="pl-c">/*</span> 只读数据通常与代码段一起存放 <span class="pl-c">*/</span></span>
     *(.<span class="pl-smi">rodata</span>*)
-} &gt;FLASH</pre></div>
+} &gt;<span class="pl-c1">FLASH</span></pre></div>
 <h3>3.3 .data 段（已初始化数据段）</h3>
 <p><strong>作用</strong>：存放已初始化的全局变量和静态变量</p>
 <p><strong>特点</strong>：</p>
@@ -162,7 +162,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 {
     *(.<span class="pl-smi">data</span> .<span class="pl-smi">data</span>.*)
     . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);
-} &gt;RAM AT&gt;FLASH    <span class="pl-c"><span class="pl-c">/*</span> 运行时在RAM，初始值在Flash <span class="pl-c">*/</span></span></pre></div>
+} &gt;<span class="pl-c1">RAM</span> <span class="pl-c1">AT</span>&gt;<span class="pl-c1">FLASH</span>    <span class="pl-c"><span class="pl-c">/*</span> 运行时在RAM，初始值在Flash <span class="pl-c">*/</span></span></pre></div>
 <p><strong>启动代码需要完成的工作</strong>：</p>
 <div class="highlight highlight-source-c"><pre class="notranslate"><span class="pl-c">// 伪代码示例</span>
 <span class="pl-k">extern</span> <span class="pl-smi">uint32_t</span> <span class="pl-s1">_sdata</span>;    <span class="pl-c">// .data段的起始地址（RAM）</span>
@@ -193,9 +193,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 {
     . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);
     *(.<span class="pl-smi">bss</span>*)
-    *(COMMON)                 <span class="pl-c"><span class="pl-c">/*</span> 未初始化的全局变量 <span class="pl-c">*/</span></span>
+    *(<span class="pl-c1">COMMON</span>)                 <span class="pl-c"><span class="pl-c">/*</span> 未初始化的全局变量 <span class="pl-c">*/</span></span>
     . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);
-} &gt;RAM</pre></div>
+} &gt;<span class="pl-c1">RAM</span></pre></div>
 <p><strong>启动代码需要完成的工作</strong>：</p>
 <div class="highlight highlight-source-c"><pre class="notranslate"><span class="pl-c">// 伪代码示例</span>
 <span class="pl-k">extern</span> <span class="pl-smi">uint32_t</span> <span class="pl-s1">_sbss</span>;   <span class="pl-c">// .bss段的起始地址</span>
@@ -221,12 +221,12 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <div class="highlight highlight-source-c-linker"><pre class="notranslate"><span class="pl-c1">.init</span> :
 {
     <span class="pl-c1">KEEP</span>(*(<span class="pl-c1">SORT_NONE</span>(.<span class="pl-smi">init</span>)))  <span class="pl-c"><span class="pl-c">/*</span> KEEP确保不被优化掉 <span class="pl-c">*/</span></span>
-} &gt;FLASH
+} &gt;<span class="pl-c1">FLASH</span>
 
 <span class="pl-c1">.fini</span> :
 {
     <span class="pl-c1">KEEP</span>(*(<span class="pl-c1">SORT_NONE</span>(.<span class="pl-smi">fini</span>)))
-} &gt;FLASH</pre></div>
+} &gt;<span class="pl-c1">FLASH</span></pre></div>
 <h3>3.6 .vector 段（中断向量表）</h3>
 <p><strong>作用</strong>：存放中断向量表，定义了各个中断服务程序的入口地址</p>
 <p><strong>特点</strong>：</p>
@@ -240,7 +240,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 {
     *(.<span class="pl-smi">vector</span>);        <span class="pl-c"><span class="pl-c">/*</span> 中断向量表 <span class="pl-c">*/</span></span>
     . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">64</span>);     <span class="pl-c"><span class="pl-c">/*</span> 可能需要64字节对齐 <span class="pl-c">*/</span></span>
-} &gt;FLASH</pre></div>
+} &gt;<span class="pl-c1">FLASH</span></pre></div>
 <h3>3.7 .stack 段（栈段）</h3>
 <p><strong>作用</strong>：定义程序栈空间</p>
 <p><strong>特点</strong>：</p>
@@ -250,12 +250,12 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>大小在链接脚本中定义</li>
 </ul>
 <p><strong>在链接脚本中的定义</strong>：</p>
-<div class="highlight highlight-source-c-linker"><pre class="notranslate">.stack <span class="pl-en">ORIGIN</span>(RAM) + LENGTH(RAM) - __stack_size :
+<div class="highlight highlight-source-c-linker"><pre class="notranslate">.stack <span class="pl-en">ORIGIN</span>(<span class="pl-c1">RAM</span>) + LENGTH(<span class="pl-c1">RAM</span>) - __stack_size :
 {
     <span class="pl-c1">PROVIDE</span>(_susrstack = .);
     . = . + __stack_size;      <span class="pl-c"><span class="pl-c">/*</span> 栈大小 <span class="pl-c">*/</span></span>
     <span class="pl-c1">PROVIDE</span>(_eusrstack = .);
-} &gt;RAM</pre></div>
+} &gt;<span class="pl-c1">RAM</span></pre></div>
 <h3>3.8 .heap 段（堆段）</h3>
 <p><strong>作用</strong>：定义动态内存分配空间（malloc/free使用）</p>
 <p><strong>特点</strong>：</p>
@@ -377,7 +377,7 @@ riscv-none-embed-objcopy -O ihex firmware.elf firmware.hex</pre></div>
     . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);    <span class="pl-c"><span class="pl-c">/*</span> 4字节对齐 <span class="pl-c">*/</span></span>
     *(.<span class="pl-smi">text</span>)
     . = <span class="pl-c1">ALIGN</span>(<span class="pl-c1">4</span>);
-} &gt;FLASH</pre></div>
+} &gt;<span class="pl-c1">FLASH</span></pre></div>
 <h2>9. 优化建议</h2>
 <h3>9.1 减少代码段大小</h3>
 <ul>
