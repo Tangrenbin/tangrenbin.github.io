@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <script src='https://blog.meekdai.com/Gmeek/plugins/GmeekVercount.js'></script>
+    <link rel="icon" href="https://github.githubassets.com/favicons/favicon.svg"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# C 语言面试题（30 题，含答案）
+
+> 适用方向：嵌入式 C、驱动、固件和底层软件。">
+<meta property="og:title" content="C 语言面试题（30 题，含答案）">
+<meta property="og:description" content="# C 语言面试题（30 题，含答案）
+
+> 适用方向：嵌入式 C、驱动、固件和底层软件。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://tangrenbin.github.io/post/C%20-yu-yan-mian-shi-ti-%EF%BC%8830%20-ti-%EF%BC%8C-han-da-an-%EF%BC%89.html">
+<meta property="og:image" content="https://github.githubassets.com/favicons/favicon.svg">
+<title>C 语言面试题（30 题，含答案）</title>
+
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">C 语言面试题（30 题，含答案）</h1>
+<div class="title-right">
+    <a href="https://tangrenbin.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/Tangrenbin/tangrenbin.github.io/issues/49" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>C 语言面试题（30 题，含答案）</h1>
+<blockquote>
+<p>适用方向：嵌入式 C、驱动、固件和底层软件。以下答案以标准 C 为基础；涉及编译器扩展或硬件行为时会特别说明。</p>
+</blockquote>
+<h2>1. C 程序从源文件到可执行文件经历哪些阶段？</h2>
+<p><strong>答案：</strong> 通常经历预处理、编译、汇编和链接。预处理展开宏、头文件和条件编译；编译把 C 翻译为汇编或中间代码并优化；汇编生成目标文件；链接解析符号和重定位，组合目标文件与库，输出 ELF/可执行映像。嵌入式还会由链接脚本安排 Flash/RAM 段地址，再从 ELF 生成 <code class="notranslate">.bin</code> 或 <code class="notranslate">.hex</code>。</p>
+<h2>2. 声明和定义有什么区别？</h2>
+<p><strong>答案：</strong> 声明告诉编译器标识符的类型和属性，定义则实际创建实体或提供函数实现。<code class="notranslate">extern int g_count;</code> 通常是变量声明，<code class="notranslate">int g_count = 0;</code> 是定义；函数原型是声明，带函数体的是定义。一个具有外部链接的对象通常只能有一个定义，但可以在多个文件中通过头文件重复声明。</p>
+<h2>3. <code class="notranslate">static</code> 关键字有哪些作用？</h2>
+<p><strong>答案：</strong> 文件作用域的 <code class="notranslate">static</code> 使变量或函数具有内部链接，只在当前翻译单元可见；块作用域的 <code class="notranslate">static</code> 局部变量具有静态存储期，只初始化一次，在整个程序运行期存在，但作用域仍局限于该代码块。它不等于线程安全，也不等于数据一定存放在 RAM 的某个固定段，具体布局由工具链和链接脚本决定。</p>
+<h2>4. <code class="notranslate">const</code> 的含义是什么？<code class="notranslate">const</code> 变量一定在只读区吗？</h2>
+<p><strong>答案：</strong> <code class="notranslate">const</code> 表示不能通过该左值修改对象，是类型系统约束。它不保证一定放在 ROM/只读段，存储位置取决于作用域、初始化方式、编译器和链接脚本。强制去掉 <code class="notranslate">const</code> 后修改一个本来定义为 <code class="notranslate">const</code> 的对象属于未定义行为。硬件寄存器有时需要 <code class="notranslate">volatile const</code>，表示软件只读但硬件可能改变。</p>
+<h2>5. <code class="notranslate">volatile</code> 有什么作用？它不能解决什么问题？</h2>
+<p><strong>答案：</strong> <code class="notranslate">volatile</code> 告诉编译器每次按抽象机要求实际读取或写入对象，不得把访问随意缓存或消除，常用于内存映射寄存器、ISR 与主程序共享的简单标志等。它不保证复合操作原子性，不提供互斥，不自动建立跨核/线程内存顺序，也不能修复数据竞争。并发同步仍需原子操作、临界区或锁。</p>
+<h2>6. 解释 <code class="notranslate">const int *p</code>、<code class="notranslate">int * const p</code> 和 <code class="notranslate">const int * const p</code>。</h2>
+<p><strong>答案：</strong> <code class="notranslate">const int *p</code>（或 <code class="notranslate">int const *p</code>）是指向只读 <code class="notranslate">int</code> 的指针，可改变 <code class="notranslate">p</code>，不能通过 <code class="notranslate">p</code> 改目标；<code class="notranslate">int * const p</code> 是常量指针，<code class="notranslate">p</code> 自身不能改，但目标可改；<code class="notranslate">const int * const p</code> 两者都不能通过该名字改。阅读复杂声明时可从标识符向外看，先确定 <code class="notranslate">const</code> 修饰指针还是指向类型。</p>
+<h2>7. 指针和数组有什么区别？</h2>
+<p><strong>答案：</strong> 数组是连续排列的一组元素，数组名在多数表达式中会转换为指向首元素的指针，但数组本身不是指针。<code class="notranslate">sizeof(array)</code> 得到整个数组字节数，<code class="notranslate">sizeof(pointer)</code> 只得指针大小；数组对象不可被整体赋值，指针变量可以改变指向。作为函数形参的 <code class="notranslate">int a[]</code> 会调整为 <code class="notranslate">int *a</code>，因此函数内无法借 <code class="notranslate">sizeof(a)</code> 得知调用方数组长度。</p>
+<h2>8. <code class="notranslate">sizeof</code> 是函数吗？有哪些注意点？</h2>
+<p><strong>答案：</strong> <code class="notranslate">sizeof</code> 是运算符，结果类型为 <code class="notranslate">size_t</code>，大多数情况下在编译期求值且操作数表达式不执行；变长数组（VLA）是例外，大小可能在运行时求值。<code class="notranslate">sizeof(char)</code> 永远为 1，但一个字节不一定是 8 位，可由 <code class="notranslate">CHAR_BIT</code> 查询。不要把 <code class="notranslate">%d</code> 用于打印 <code class="notranslate">size_t</code>，应使用 <code class="notranslate">%zu</code>（工具链支持 C99 时）。</p>
+<h2>9. 什么是结构体内存对齐？为什么会有填充字节？</h2>
+<p><strong>答案：</strong> 不同类型通常要求地址满足一定对齐，编译器会在成员之间和结构体尾部插入填充，以提高访问效率并保证结构体数组中的每个元素对齐。例如成员顺序不同可能导致结构体大小不同。协议报文不应直接依赖本机结构体布局，应显式序列化；强制 <code class="notranslate">packed</code> 可能引发非对齐访问、性能下降甚至硬件异常。</p>
+<h2>10. <code class="notranslate">union</code> 有什么用途？如何可靠处理字节序？</h2>
+<p><strong>答案：</strong> 联合体的所有成员共享同一段存储，大小至少能容纳最大成员并满足对齐，常用于节省互斥数据的空间或描述寄存器视图。用联合体跨成员读取做类型重解释在不同 C 标准/编译器下存在可移植性问题；更稳妥的是用 <code class="notranslate">memcpy</code> 或移位掩码。协议字节序应显式转换，不能依赖联合体成员顺序或主机端序。</p>
+<h2>11. 大端和小端是什么？如何解析网络字节流？</h2>
+<p><strong>答案：</strong> 大端把多字节数的最高有效字节放在低地址，小端相反。字节序描述多字节对象的字节排列，单字节无所谓端序。解析协议时应按规范显式组合，例如大端 16 位值可写为 <code class="notranslate">((uint16_t)buf[0] &lt;&lt; 8) | buf[1]</code>，或使用经过验证的转换函数；不要把未对齐的 <code class="notranslate">uint8_t *</code> 直接强转为 <code class="notranslate">uint32_t *</code> 解引用。</p>
+<h2>12. 宏和内联函数有什么区别？</h2>
+<p><strong>答案：</strong> 宏在预处理阶段进行文本替换，没有类型检查，参数可能被重复求值，作用域和调试体验也较差；内联函数遵守类型、作用域和单次求值规则，编译器可决定是否真正内联。简单常量、条件编译等适合宏；可表达为函数的逻辑通常优先 <code class="notranslate">static inline</code>。宏参数和整体表达式应充分加括号。</p>
+<h2>13. 下面的宏有什么问题：<code class="notranslate">#define SQUARE(x) x*x</code>？</h2>
+<p><strong>答案：</strong> 缺少括号，<code class="notranslate">SQUARE(a + b)</code> 展开为 <code class="notranslate">a + b*a + b</code>，结果错误；即使改成 <code class="notranslate">#define SQUARE(x) ((x) * (x))</code>，调用 <code class="notranslate">SQUARE(i++)</code> 仍会使 <code class="notranslate">i</code> 被求值两次，并可能触发未定义行为。更好的实现是按类型提供 <code class="notranslate">static inline</code> 函数，或保证宏实参无副作用。</p>
+<h2>14. 什么是左值、右值和可修改左值？</h2>
+<p><strong>答案：</strong> 左值是指代某个对象的表达式；可修改左值还要求对象类型允许修改且不是数组等受限情形。赋值运算符左侧通常需要可修改左值。右值是常用于计算的值表达式。数组名是左值但不可修改，在多数表达式中会转换为指向首元素的指针。</p>
+<h2>15. 什么是未定义行为、未指定行为和实现定义行为？</h2>
+<p><strong>答案：</strong> 未定义行为（UB）是标准不规定任何结果，如有符号整数溢出、越界访问、解引用空指针；程序不能依赖其表现。未指定行为允许实现从若干结果中选择且无需说明，如某些求值顺序。实现定义行为由编译器选择并应文档化，如普通 <code class="notranslate">char</code> 是有符号还是无符号。嵌入式代码应结合编译器 ABI 文档，并用警告和静态分析发现风险。</p>
+<h2>16. <code class="notranslate">i = i++ + 1;</code> 有什么问题？</h2>
+<p><strong>答案：</strong> 该表达式在 C 中对 <code class="notranslate">i</code> 的修改与其他访问/修改缺少所需的先后关系，属于未定义行为（具体标准版本的术语有所变化）。不能根据某次编译结果推断它“先加再赋”或“等于原值加一”。应拆成清晰的独立语句，避免在同一完整表达式中多次修改同一对象。</p>
+<h2>17. 有符号整数和无符号整数混合运算有什么陷阱？</h2>
+<p><strong>答案：</strong> 经过通常算术转换后，有符号值可能被转换为无符号值。例如 <code class="notranslate">-1 &lt; 1U</code> 往往为假，因为 <code class="notranslate">-1</code> 转为很大的无符号数。无符号溢出按模 <code class="notranslate">2^N</code> 定义，而有符号溢出是未定义行为。长度、下标和返回错误码混用时尤其危险，应统一类型、显式检查范围并避免用无符号值表达负错误。</p>
+<h2>18. <code class="notranslate">malloc</code>、<code class="notranslate">calloc</code>、<code class="notranslate">realloc</code> 和 <code class="notranslate">free</code> 有何区别？</h2>
+<p><strong>答案：</strong> <code class="notranslate">malloc</code> 分配未初始化的字节块；<code class="notranslate">calloc</code> 分配数组并把所有位清零，但全零位模式不应被笼统理解为所有类型的语义零；<code class="notranslate">realloc</code> 调整大小，可能原地扩展或搬迁；<code class="notranslate">free</code> 释放。<code class="notranslate">realloc(p, n)</code> 失败时原指针仍有效，所以应先接到临时指针。嵌入式还需考虑碎片、线程安全、确定性和分配失败。</p>
+<h2>19. 什么是内存泄漏、野指针和悬空指针？</h2>
+<p><strong>答案：</strong> 已分配内存失去所有可用引用而未释放是内存泄漏；指向未知非法地址、未初始化的指针常称野指针；对象生命周期结束后仍指向原地址的是悬空指针。释放后将某一个指针设为 <code class="notranslate">NULL</code> 只能防止通过该别名误用，不能清除其他别名。应明确所有权、成对管理资源并使用动态分析或静态分析工具。</p>
+<h2>20. <code class="notranslate">memcpy</code> 和 <code class="notranslate">memmove</code> 有什么区别？</h2>
+<p><strong>答案：</strong> <code class="notranslate">memcpy</code> 要求源和目标内存区域不重叠，重叠时行为未定义；<code class="notranslate">memmove</code> 支持重叠，语义上像先复制到临时区域再写目标，实际实现通常按地址选择复制方向。两者都按字节复制，不理解对象内部指针，也不会追加字符串终止符。</p>
+<h2>21. <code class="notranslate">strlen</code> 和 <code class="notranslate">sizeof</code> 的区别是什么？</h2>
+<p><strong>答案：</strong> <code class="notranslate">strlen</code> 在运行时从指针位置查找第一个 <code class="notranslate">\0</code>，返回其前面的字符数，不包括终止符；若没有可访问的终止符会越界，行为未定义。<code class="notranslate">sizeof</code> 获取类型或对象的存储大小，字符数组会包含初始化字符串的 <code class="notranslate">\0</code>，指针则只返回指针大小。二进制数据不能用 <code class="notranslate">strlen</code> 计算长度。</p>
+<h2>22. <code class="notranslate">strcpy</code>、<code class="notranslate">sprintf</code> 等函数有哪些风险？如何改进？</h2>
+<p><strong>答案：</strong> 它们若目标容量不足会越界。应在接口中传递缓冲区容量，使用 <code class="notranslate">snprintf</code> 并检查返回值是否大于等于容量；字符串复制可先验证长度再复制，或使用项目统一的安全封装。<code class="notranslate">strncpy</code> 并非总是安全替代：源过长时可能不追加 <code class="notranslate">\0</code>，源很短时还会填充大量零。</p>
+<h2>23. 函数指针如何声明？有什么典型用途？</h2>
+<p><strong>答案：</strong> <code class="notranslate">int (*fp)(int, int);</code> 声明一个指向“接收两个 <code class="notranslate">int</code>、返回 <code class="notranslate">int</code>”函数的指针。常用 <code class="notranslate">typedef int (*operation_fn)(int, int);</code> 改善可读性。典型用途包括回调、状态机动作表、中断向量、驱动抽象接口。调用前要保证签名完全兼容且指针非空，不能把数据指针和函数指针想当然地互转。</p>
+<h2>24. 什么是回调函数？使用时要注意什么？</h2>
+<p><strong>答案：</strong> 回调是把函数指针注册给模块，由模块在特定事件发生时调用，实现控制反转和解耦。需明确调用上下文（任务还是 ISR）、是否可阻塞、重入性、参数对象生命周期、注册/注销并发和错误处理。嵌入式回调若在 ISR 中触发，应保持短小并把耗时工作转交任务。</p>
+<h2>25. 什么是可重入函数？它和线程安全有什么关系？</h2>
+<p><strong>答案：</strong> 可重入函数在尚未完成时被再次调用也能正确工作，通常不依赖可变全局/静态状态，不返回共享静态缓冲区，不调用不可重入函数。线程安全只要求多线程并发调用正确，可以通过锁实现，因此线程安全函数不一定可重入（例如被信号/中断再次调用时锁可能死锁）。ISR 能否调用还要看执行时间和 API 限制。</p>
+<h2>26. 头文件应如何防止重复包含？</h2>
+<p><strong>答案：</strong> 使用 include guard：<code class="notranslate">#ifndef MODULE_H</code>、<code class="notranslate">#define MODULE_H</code>、文件内容、<code class="notranslate">#endif</code>。<code class="notranslate">#pragma once</code> 更简洁且被广泛支持，但不是 ISO C 标准。头文件应尽量自包含，包含其声明所需的类型定义，避免在头文件定义具有外部链接的普通函数或变量。</p>
+<h2>27. <code class="notranslate">extern</code> 的正确用法是什么？</h2>
+<p><strong>答案：</strong> 在某个 <code class="notranslate">.c</code> 文件中定义全局对象，例如 <code class="notranslate">int g_state;</code>；在头文件中写 <code class="notranslate">extern int g_state;</code>，需要它的源文件包含该头文件。不要在头文件中直接写 <code class="notranslate">int g_state;</code>，否则可能造成多重定义或依赖旧的 common 符号行为。更好的模块设计通常是把变量设为文件内 <code class="notranslate">static</code>，通过函数接口访问。</p>
+<h2>28. 位域适合直接映射硬件寄存器或通信协议吗？</h2>
+<p><strong>答案：</strong> 通常不建议用于可移植的寄存器/协议布局，因为位域的分配顺序、对齐、跨存储单元方式和基础类型细节含有实现定义行为，编译器还可能生成不期望的读改写。可靠做法是使用固定宽度无符号整数配合掩码和移位，并阅读芯片手册。若特定工具链项目使用位域，必须依赖并验证其 ABI。</p>
+<h2>29. 固定宽度整数类型有什么价值？</h2>
+<p><strong>答案：</strong> <code class="notranslate">&lt;stdint.h&gt;</code> 的 <code class="notranslate">uint8_t</code>、<code class="notranslate">int16_t</code>、<code class="notranslate">uint32_t</code> 等在实现提供时具有明确位宽，适合寄存器、协议和存储格式。并非所有平台都必须提供所有精确宽度类型；还有至少宽度类型 <code class="notranslate">uint_least32_t</code> 和最快类型 <code class="notranslate">uint_fast32_t</code>。打印时可使用 <code class="notranslate">&lt;inttypes.h&gt;</code> 的 <code class="notranslate">PRIu32</code> 等宏，避免假定 <code class="notranslate">uint32_t</code> 一定是 <code class="notranslate">unsigned int</code>。</p>
+<h2>30. 嵌入式 C 中如何写出更可靠的代码？</h2>
+<p><strong>答案：</strong> 开启高等级编译警告并视关键警告为错误，使用静态分析、代码审查和单元/集成测试；明确整数宽度、缓冲区容量、所有权、超时和错误路径；避免未定义行为、不可控递归和运行期频繁分配；寄存器访问使用厂商定义和必要的 <code class="notranslate">volatile</code>；对 ISR/任务共享数据采用正确同步。安全项目还可采用 MISRA C、CERT C 等规则，但应理解规则背后的风险，而不是机械消警告。</p>
+<hr>
+<h2>面试作答建议</h2>
+<p>C 语言题不要只回答“编译器一般会怎样”，要区分：<strong>标准保证、实现定义、工具链扩展和硬件事实</strong>。遇到有争议的表达式，先判断是否越界、溢出、违反生命周期或存在未定义行为，再讨论具体输出。</p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://tangrenbin.github.io">唐任斌的博客</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if("07/11/2024"!=""){
+    var startSite=new Date("07/11/2024");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","Tangrenbin/tangrenbin.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+
+
+</script>
+<script src='https://blog.meekdai.com/Gmeek/plugins/GmeekTOC.js'></script><script src='https://blog.meekdai.com/Gmeek/plugins/lightbox.js'></script>
+
+</html>
