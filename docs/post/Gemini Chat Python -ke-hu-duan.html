@@ -243,7 +243,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
         <span class="pl-s1">self</span>.<span class="pl-c1">conversation_history</span> <span class="pl-c1">=</span> []  <span class="pl-c"># 存储对话历史</span>
         <span class="pl-s1">self</span>.<span class="pl-c1">max_history</span> <span class="pl-c1">=</span> <span class="pl-c1">10</span>  <span class="pl-c"># 默认保留最近10轮对话</span>
 
-    <span class="pl-en">@<span class="pl-s1">staticmethod</span></span>
+    <span class="pl-en">@<span class="pl-en">staticmethod</span></span>
     <span class="pl-k">def</span> <span class="pl-en">check_dependencies</span>() <span class="pl-c1">-&gt;</span> <span class="pl-c1">None</span>:
         <span class="pl-s">"""检查并安装必要的依赖"""</span>
         <span class="pl-s1">required</span> <span class="pl-c1">=</span> {<span class="pl-s">'aiohttp'</span>, <span class="pl-s">'asyncio'</span>}
